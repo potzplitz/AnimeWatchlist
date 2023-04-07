@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -25,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import database.AddAnime;
@@ -48,7 +52,7 @@ class Frame extends JFrame{
 
 public class AWLGui {
 	
-	private boolean gesehenboolean = false;
+	private boolean gesehenboolean;
 
 	
 	
@@ -105,10 +109,24 @@ public class AWLGui {
 		
 		JPanel infos = new JPanel();
 		infos.setBounds(250, 50, 250, 450);
+		infos.setLayout(null);
 		infos.setBackground(Color.WHITE);
 		
 		JPanel nichtgesehen = new JPanel();
 		nichtgesehen.setBounds(0, 50, 250, 411);
+		
+		JLabel gesehenjn = new JLabel("Gesehen: ");
+		gesehenjn.setBounds(5, 30, 300, 30);
+		
+		JLabel genrename = new JLabel("Genre:  ");
+		genrename.setBounds(5, 50, 300, 30);
+		
+		JLabel animelabel = new JLabel("Infos");
+		animelabel.setFont(new Font(null, Font.BOLD, 14));
+		animelabel.setBounds(10, 1, 300, 30);
+		
+		JLabel separator = new JLabel("________________________________________________________________________________________________");
+		separator.setBounds(0, 6, 500, 30);
 		
 		File file = new File("C:\\AnimeWatchList\\Database");
 		File[] listOfFilesGesehen = file.listFiles();
@@ -120,27 +138,45 @@ public class AWLGui {
 			String filename = listOfFilesGesehen[i].getName() + "";	
 			filename = filename.substring(0, filename.lastIndexOf("."));
 
-			
 			gesehen.setLayout(new GridLayout(animecount, 1, 1 ,1));
 			nichtgesehen.setLayout(new GridLayout(animecount, 1, 1 ,1));
 			
 			JButton anime = new JButton(filename);
 			anime.setPreferredSize(new  Dimension(250, 50));
-			
+	
+			Map<String, JButton> buttonMap = new HashMap<>();
+			buttonMap.put(filename, anime);
+	
+			anime.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String buttonname = buttonMap.keySet() + "";	
+					buttonname = buttonname.substring(1, buttonname.lastIndexOf("]"));
+					
+					animelabel.setText(buttonname);
+					try {
+						gesehenjn.setText("Gesehen:   " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3));
+						genrename.setText("Genre:        " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(1));
+					} catch (IOException e1) {e1.printStackTrace();}		
+				}
+			});
 			
 			if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("true")) {
 				gesehen.add(anime);
 			} else if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("false")) {
-				nichtgesehen.add(anime);	
+				nichtgesehen.add(anime);
 			}
-			
-			
+
 			gesehen.repaint();
 			gui.setSize(500, 499);
 			gui.repaint();
 			gui.setSize(500, 500);
 		}
 
+		
+	    
+		
 		final JScrollPane scroll_1 = new JScrollPane(gesehen, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll_1.setBounds(0, 50, 250, 411);
@@ -230,6 +266,10 @@ public class AWLGui {
 		genre.setVisible(true);
 		genrelabel.setVisible(true);
 		infos.setVisible(true);
+		gesehenjn.setVisible(true);
+		animelabel.setVisible(true);
+		separator.setVisible(true);
+		genrename.setVisible(true);
 		addframe.add(genrelabel);
 		addframe.add(genre);
 		addframe.add(confirm);
@@ -238,6 +278,10 @@ public class AWLGui {
 		addframe.add(tags);
 		addframe.add(animename);
 		addframe.add(addanimelabel);
+		infos.add(gesehenjn);
+		infos.add(animelabel, SwingConstants.CENTER);
+		infos.add(separator);
+		infos.add(genrename);
 		gui.add(infos);
 		gui.add(add);
 		gui.add(watchbutton);

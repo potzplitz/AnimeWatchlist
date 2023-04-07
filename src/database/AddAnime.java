@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class AddAnime {
 	
-	public void addAnime(String animeName, String genre, String tags, Boolean gesehen) throws IOException {
+	public void addAnime(String animeName, String genre, String tags, boolean gesehen) throws IOException {
 		
 		System.out.println("Anime Name: " + animeName + " Genre: " + genre + " Tags: " + tags + " Gesehen: " + gesehen);
 		
