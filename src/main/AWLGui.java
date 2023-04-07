@@ -54,7 +54,9 @@ public class AWLGui {
 	private boolean gesehenboolean;
 	private boolean gesehenbooleane;
 	private String oldname;
-	private String oldnamestore;
+
+	private int geseheneanimes;
+	private int nichtgeseheneanimes;
 
 	private String buttonpress;
 	
@@ -229,8 +231,10 @@ public class AWLGui {
 			});
 			if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("true")) {
 				gesehen.add(anime);
+				geseheneanimes++;
 			} else if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("false")) {
 				nichtgesehen.add(anime);
+				nichtgeseheneanimes++;
 			}
 			gesehen.repaint();
 			gui.setSize(500, 499);
@@ -280,10 +284,10 @@ public class AWLGui {
 	    
 		
 		
-		Button gesehenbutton = new Button("gesehen");
+		Button gesehenbutton = new Button("gesehen " + "(" + geseheneanimes + " Animes)");
 		gesehenbutton.setBounds(0, 0, 250, 50);
 		
-		Button watchbutton = new Button("nicht gesehen");
+		Button watchbutton = new Button("nicht gesehen " + "(" + nichtgeseheneanimes + " Animes)");
 		watchbutton.setBounds(0, 0, 250, 50);
 		
 		Button add = new Button("+");
