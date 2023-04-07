@@ -172,16 +172,12 @@ public class AWLGui {
 		JLabel separator2 = new JLabel("________________________________________________________________________________________________");
 		separator2.setBounds(0, 350, 500, 30);
 		
-		JCheckBox gesehenyn = new JCheckBox("gesehen");
-		gesehenyn.setBounds(20, 377, 100, 30);
-		gesehenyn.setBackground(Color.WHITE);
-		
 		File file = new File("C:\\AnimeWatchList\\Database");
 		File[] listOfFilesGesehen = file.listFiles();
 		int animecount = file.list().length;
 
 		Button edit = new Button("Anime bearbeiten");
-		edit.setBounds(110, 377, 100, 30);
+		edit.setBounds(70, 377, 100, 30);
 		
 		JFrame editwindow = new JFrame("Anime bearbeiten [WORK IN PROGRESS]");
 		editwindow.setSize(400, 300);
@@ -224,7 +220,6 @@ public class AWLGui {
 						tagse.setText(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(2));
 						genree.setText(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(1));
 						gesehenboole.setSelected(Boolean.parseBoolean(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3)));
-						gesehenyn.setSelected(Boolean.parseBoolean(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3)));
 						animenamee.setText(buttonname);			
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
@@ -366,7 +361,6 @@ public class AWLGui {
 		separator2.setVisible(true);
 		editanimelabel.setVisible(true);
 		confirme.setVisible(true);
-		gesehenyn.setVisible(true);
 		addframe.add(genrelabel);
 		addframe.add(genre);
 		addframe.add(confirm);
@@ -390,7 +384,6 @@ public class AWLGui {
 		infos.add(genrename);
 		infos.add(edit);
 		infos.add(separator2);
-		infos.add(gesehenyn);
 		gui.add(infos);
 		gui.add(add);
 		gui.add(watchbutton);
