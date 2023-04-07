@@ -1,0 +1,38 @@
+edit.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String buttonname = buttonMap.keySet() + "";
+					buttonname = buttonname.substring(1, buttonname.lastIndexOf("]"));
+					
+					
+							try {
+								gesehenyn.setSelected(Boolean.parseBoolean(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3)));
+							} catch (IOException e2) {e2.printStackTrace();}
+
+					editwindow.setVisible(true);
+					animenamee.setText(buttonname);
+					try {
+						tagse.setText(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(2));
+						genree.setText(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(1));
+						gesehenboole.setSelected(Boolean.parseBoolean(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3)));
+					} catch (IOException e1) {e1.printStackTrace();}
+					
+					confirme.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							
+							String buttonname = buttonMap.keySet() + "";
+							buttonname = buttonname.substring(1, buttonname.lastIndexOf("]"));
+
+							EditAnime edit = new EditAnime();
+							try {
+								String oldname = Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(0);
+								edit.editAnime(oldname, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}	
+						}	
+					});
+				}	
+			});
