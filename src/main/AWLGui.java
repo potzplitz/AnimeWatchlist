@@ -240,7 +240,7 @@ public class AWLGui {
 			gesehen.repaint();
 			gui.setSize(500, 499);
 			gui.repaint();
-			gui.setSize(500, 500);	
+			gui.setSize(500, 500);			
 		}
 		
 		edit.addActionListener(new ActionListener() {
