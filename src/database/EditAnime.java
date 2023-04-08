@@ -6,13 +6,15 @@ import java.io.PrintWriter;
 
 public class EditAnime {
 	
-public void editAnime(String oldAnimeName, String animeName, String genre, String tags, boolean gesehen) throws IOException {
+public void editAnime(boolean state, String animeName, String genre, String tags, boolean gesehen) throws IOException {
 		
-		System.out.println("Old Anime Name: "+ oldAnimeName + " Anime Name: " + animeName + " Genre: " + genre + " Tags: " + tags + " Gesehen: " + gesehen);
+		System.out.println("Old Anime Name: "+ " Anime Name: " + animeName + " Genre: " + genre + " Tags: " + tags + " Gesehen: " + gesehen);
 		
 		File file = new File("C:\\AnimeWatchList\\Database\\" + animeName + ".anime");
-		File oldanime = new File("C:\\AnimeWatchList\\Database\\" + oldAnimeName + ".anime");
-		oldanime.delete();
+		
+		if(state == true) {
+		
+		file.delete();
 		file.createNewFile();
 		
 		PrintWriter writer = new PrintWriter("C:\\AnimeWatchList\\Database\\" + animeName + ".anime", "UTF-8");
@@ -21,6 +23,15 @@ public void editAnime(String oldAnimeName, String animeName, String genre, Strin
 		writer.println(tags);
 		writer.println(gesehen);
 		writer.close();
+
+		
+		} else if(state == false) {
+			
+			file.delete();
+			
+		}
+		
+		
 		
 	}
 

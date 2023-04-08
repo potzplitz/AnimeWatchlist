@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -24,6 +25,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
@@ -57,13 +59,16 @@ public class AWLGui {
 
 	private int geseheneanimes;
 	private int nichtgeseheneanimes;
+	
+	private int progressbar;
+	private int progressbaranime;
 
 	private String buttonpress;
 	
-	public void Gui() throws IOException {
+	public void Gui() throws IOException, InterruptedException {
 		
 		Frame gui = new Frame("Anime Watch List");
-		gui.setVisible(true);
+		gui.setVisible(false);
 		
 		JFrame addframe = new JFrame("Anime hinzufügen...");
 		addframe.setSize(400, 300);
@@ -71,6 +76,8 @@ public class AWLGui {
 		addframe.setLayout(null);
 		addframe.setResizable(false);
 		addframe.setVisible(false);
+		
+		
 		
 		JLabel addanimelabel = new JLabel("Anime Name");
 		addanimelabel.setBounds(40, 10, 100, 30);
@@ -81,13 +88,13 @@ public class AWLGui {
 		JLabel genrelabel = new JLabel("Genre");
 		genrelabel.setBounds(40, 130, 100, 30);
 		
-		TextField animename = new TextField();
+		TextField animename = new TextField(null);
 		animename.setBounds(40, 40, 300, 30);
 		
-		TextField tags = new TextField();
+		TextField tags = new TextField(null);
 		tags.setBounds(40, 100, 300, 30);
 		
-		TextField genre = new TextField();
+		TextField genre = new TextField(null);
 		genre.setBounds(40, 160, 300, 30);
 		
 		JCheckBox gesehenbool = new JCheckBox("Gesehen");
@@ -116,8 +123,11 @@ public class AWLGui {
 		infos.setLayout(null);
 		infos.setBackground(Color.WHITE);
 		
+		JProgressBar load = new JProgressBar();
+		
 		JPanel nichtgesehen = new JPanel();
 		nichtgesehen.setBounds(0, 50, 250, 411);
+		nichtgesehen.setBackground(Color.LIGHT_GRAY);
 		
 		JLabel gesehenjn = new JLabel("Gesehen: ");
 		gesehenjn.setBounds(5, 30, 300, 30);
@@ -138,13 +148,13 @@ public class AWLGui {
 		JLabel genrelabele = new JLabel("Genre");
 		genrelabele.setBounds(40, 130, 100, 30);
 		
-		TextField animenamee = new TextField();
+		TextField animenamee = new TextField(null);
 		animenamee.setBounds(40, 40, 300, 30);
 		
-		TextField tagse = new TextField();
+		TextField tagse = new TextField(null);
 		tagse.setBounds(40, 100, 300, 30);
 		
-		TextField genree = new TextField();
+		TextField genree = new TextField(null);
 		genree.setBounds(40, 160, 300, 30);
 		
 		JCheckBox gesehenboole = new JCheckBox("Gesehen");
@@ -177,9 +187,13 @@ public class AWLGui {
 		File file = new File("C:\\AnimeWatchList\\Database");
 		File[] listOfFilesGesehen = file.listFiles();
 		int animecount = file.list().length;
+		
 
 		Button edit = new Button("Anime bearbeiten");
-		edit.setBounds(70, 377, 100, 30);
+		edit.setBounds(123, 377, 100, 30);
+		
+		Button delete = new Button("Anime löschen");
+		delete.setBounds(10, 377, 100, 30);
 		
 		JFrame editwindow = new JFrame("Anime bearbeiten [WORK IN PROGRESS]");
 		editwindow.setSize(400, 300);
@@ -188,16 +202,55 @@ public class AWLGui {
 		editwindow.setLayout(null);
 		editwindow.setVisible(false);
 		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		for(int i = 0; i < animecount; i++) {	
+		JFrame loadwindow = new JFrame("Datenbank wird gelesen...");
+		loadwindow.setSize(400, 200);
+		loadwindow.setUndecorated(true);
+		loadwindow.setResizable(false);
+		loadwindow.setLocation(dim.width/2-loadwindow.getSize().width/2, dim.height/2-loadwindow.getSize().height/2);
+		loadwindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		loadwindow.setBackground(Color.LIGHT_GRAY);
+		loadwindow.setLayout(null);
+		loadwindow.setVisible(true);
+		
+		JLabel label1 = new JLabel("by potzplitz");
+		label1.setBounds(168, 80, 200, 30);
+		label1.setVisible(true);
+		loadwindow.add(label1);
+		
+		JLabel loading = new JLabel();
+		loading.setBounds(1, 155, 200, 30);
+		loadwindow.add(loading);
+		
+		JLabel label = new JLabel("Anime Watchlist");
+		label.setBounds(125, 20, 300, 100);
+		label.setFont(label.getFont().deriveFont(20f));
+		label.setVisible(true);
+		loadwindow.add(label);
+		
+		load.setMinimum(0);
+		load.setMaximum(animecount + 1);
+		
+		loadwindow.add(load);
+		load.setBounds(1, 138, 398, 20);
+		
+		
+		
+		for(int i = 0; i < animecount; i++) {
+			Thread.sleep(0);
+			load.setValue(i);
+
 			String filename = listOfFilesGesehen[i].getName() + "";	
 			filename = filename.substring(0, filename.lastIndexOf("."));
+			
+			loading.setText(filename);
+			
 
-			gesehen.setLayout(new GridLayout(animecount, 1, 1 ,1));
-			nichtgesehen.setLayout(new GridLayout(animecount, 1, 1 ,1));
+			System.out.println(filename);
 			
 			JButton anime = new JButton(filename);
-			anime.setPreferredSize(new  Dimension(250, 50));
+			anime.setPreferredSize(new  Dimension(220, 50));
 			anime.setBackground(Color.LIGHT_GRAY);
 	
 			Map<String, JButton> buttonMap = new HashMap<>();
@@ -226,21 +279,29 @@ public class AWLGui {
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}						
+					}	
+		
 				}
 			});
+
 			if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("true")) {
 				gesehen.add(anime);
+				
 				geseheneanimes++;
 			} else if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("false")) {
 				nichtgesehen.add(anime);
+				
 				nichtgeseheneanimes++;
 			}
 			gesehen.repaint();
+			nichtgesehen.repaint();
 			gui.setSize(500, 499);
 			gui.repaint();
-			gui.setSize(500, 500);			
+			gui.setSize(500, 500);	
 		}
+		
+		nichtgesehen.setLayout(new GridLayout(animecount, 1, 1 ,1));
+		gesehen.setLayout(new GridLayout(animecount, 1, 1 ,1));
 		
 		edit.addActionListener(new ActionListener() {
 
@@ -256,7 +317,7 @@ public class AWLGui {
 						buttonname = buttonname.substring(1, buttonname.lastIndexOf("]"));
 						EditAnime edit = new EditAnime();
 						try {
-							edit.editAnime(oldname, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane);
+							edit.editAnime(true, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane);
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}	
@@ -265,14 +326,16 @@ public class AWLGui {
 			}	
 		});
 		
-		final JScrollPane scroll_1 = new JScrollPane(gesehen, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		
+		
+		final JScrollPane scroll_1 = new JScrollPane(gesehen, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll_1.setBounds(0, 50, 250, 411);
 		scroll_1.getVerticalScrollBar().setUnitIncrement(10);
 		
 		gui.add(scroll_1);
 		
-		final JScrollPane scroll_2 = new JScrollPane(nichtgesehen, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		final JScrollPane scroll_2 = new JScrollPane(nichtgesehen, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll_2.setBounds(0, 50, 250, 411);
 		scroll_2.getVerticalScrollBar().setUnitIncrement(10);
@@ -295,6 +358,8 @@ public class AWLGui {
 		
 		Button confirm = new Button("hinzufügen");
 		confirm.setBounds(135, 220, 100, 30);
+		
+		
 		
 		gesehenbutton.addActionListener(new ActionListener() {
 
@@ -339,6 +404,23 @@ public class AWLGui {
 					e1.printStackTrace();
 				}	
 			}	
+		});
+		
+		delete.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EditAnime edit = new EditAnime();
+				try {
+					edit.editAnime(false, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+			
+			
 		});
 		
 		
@@ -388,12 +470,18 @@ public class AWLGui {
 		infos.add(genrename);
 		infos.add(edit);
 		infos.add(separator2);
+		infos.add(delete);
 		gui.add(infos);
 		gui.add(add);
 		gui.add(watchbutton);
 		gui.add(gesehenbutton);
 		
+		
 		gui.repaint();
+		
+		loadwindow.setVisible(false);
+		gui.setVisible(true);
+		
 	}
 
 	}

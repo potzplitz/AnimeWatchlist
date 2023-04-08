@@ -7,7 +7,7 @@ import main.AWLGui;
 
 public class Datachecker {
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 
 		
 		CreateFileStructure create = new CreateFileStructure();
