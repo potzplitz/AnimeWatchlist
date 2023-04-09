@@ -83,6 +83,13 @@ public class AWLGui {
 		exporter.setResizable(false);
 		exporter.setVisible(false);
 		
+		JFrame searchgui = new JFrame("nach Anime suchen...");
+		searchgui.setSize(400, 300);
+		searchgui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		searchgui.setLayout(null);
+		searchgui.setResizable(false);
+		searchgui.setVisible(false);
+		
 		JLabel addanimelabel = new JLabel("Anime Name");
 		addanimelabel.setBounds(40, 10, 100, 30);
 		
@@ -103,9 +110,7 @@ public class AWLGui {
 		
 		JCheckBox gesehenbool = new JCheckBox("Gesehen");
 		gesehenbool.setBounds(150, 185, 100, 30);
-		
 		gesehenbool.addItemListener(new ItemListener() {
-
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -115,9 +120,7 @@ public class AWLGui {
 				}		
 	     	}	
     	});
-		
-		
-		
+
 		JPanel gesehen = new JPanel();
 		gesehen.setLocation(0, 50);
 		gesehen.setBackground(Color.LIGHT_GRAY);
@@ -161,6 +164,9 @@ public class AWLGui {
 		TextField genree = new TextField(null);
 		genree.setBounds(40, 160, 300, 30);
 		
+		JTextField searchbar = new JTextField();
+		searchbar.setBounds(30, 30, 320, 30);
+		
 		JTextField path = new JTextField("Pfad festlegen");
 		path.setBounds(60, 100, 250, 30);
 		
@@ -176,14 +182,11 @@ public class AWLGui {
 		
 		JLabel separator3 = new JLabel("___________________________________________________________________________________");
 		separator3.setBounds(0, 14, 500, 30);
-		
-		
-		
+
 		JCheckBox gesehenboole = new JCheckBox("Gesehen");
 		gesehenboole.setBounds(150, 185, 100, 30);
 		
 		gesehenboole.addItemListener(new ItemListener() {
-
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -209,7 +212,6 @@ public class AWLGui {
 		File file = new File("C:\\AnimeWatchList\\Database");
 		File[] listOfFilesGesehen = file.listFiles();
 		int animecount = file.list().length;
-		
 
 		Button edit = new Button("Anime bearbeiten");
 		edit.setBounds(123, 377, 100, 30);
@@ -256,9 +258,7 @@ public class AWLGui {
 		
 		loadwindow.add(load);
 		load.setBounds(1, 138, 398, 20);
-		
-		
-		
+
 		for(int i = 0; i < animecount; i++) {
 			Thread.sleep(0);
 			load.setValue(i);
@@ -274,11 +274,9 @@ public class AWLGui {
 	
 			Map<String, JButton> buttonMap = new HashMap<>();
 			buttonMap.put(filename, anime);
-			
 			buttonpress = buttonMap.keySet() + "";
 	
 			anime.addActionListener(new ActionListener() {
-
 				@Override
 				public void actionPerformed(ActionEvent e) {		
 					String buttonname = buttonMap.keySet() + "";	
@@ -294,7 +292,6 @@ public class AWLGui {
 						gesehenboole.setSelected(Boolean.parseBoolean(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3)));
 						animenamee.setText(buttonname);			
 					} catch (IOException e1) {e1.printStackTrace();}			
-
 				}
 			});
 
@@ -305,6 +302,8 @@ public class AWLGui {
 				nichtgesehen.add(anime);
 				nichtgeseheneanimes++;
 			}
+			
+			// search engine
 
 			gesehen.repaint();
 			nichtgesehen.repaint();
@@ -313,13 +312,10 @@ public class AWLGui {
 			gui.setSize(500, 500);	
 		}
 		
-		
-		
 		nichtgesehen.setLayout(new GridLayout(nichtgeseheneanimes, 1, 1 ,1));
 		gesehen.setLayout(new GridLayout(geseheneanimes, 1, 1 ,1));
 		
 		edit.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String buttonname = buttonpress;			
@@ -328,6 +324,7 @@ public class AWLGui {
 				confirme.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						editwindow.dispose();
 						String buttonname = buttonpress;
 						buttonname = buttonname.substring(1, buttonname.lastIndexOf("]"));
 						EditAnime edit = new EditAnime();
@@ -340,15 +337,11 @@ public class AWLGui {
 				});
 			}	
 		});
-		
-		
-		
+
 		final JScrollPane scroll_1 = new JScrollPane(gesehen, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll_1.setBounds(0, 50, 250, 411);
 		scroll_1.getVerticalScrollBar().setUnitIncrement(10);
-		
-		
 		gui.add(scroll_1);
 		
 		final JScrollPane scroll_2 = new JScrollPane(nichtgesehen, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -357,12 +350,8 @@ public class AWLGui {
 		scroll_2.getVerticalScrollBar().setUnitIncrement(10);
 		scroll_2.setForeground(Color.LIGHT_GRAY);
 		scroll_2.setVisible(false);
-		
 		gui.add(scroll_2);
-		
-	    
-		
-		
+
 		Button gesehenbutton = new Button("gesehen " + "(" + geseheneanimes + " Animes)");
 		gesehenbutton.setBounds(0, 0, 250, 50);
 		
@@ -370,6 +359,7 @@ public class AWLGui {
 		watchbutton.setBounds(0, 0, 250, 50);
 		
 		Button add = new Button("+");
+		add.setFont(new Font("Arial", Font.PLAIN, 23));
 		add.setBounds(434, 0, 50, 50);
 		add.setBackground(Color.LIGHT_GRAY);
 		
@@ -377,41 +367,34 @@ public class AWLGui {
 		confirm.setBounds(135, 220, 100, 30);
 		
 		Button exportb = new Button("Liste exportieren");
-		exportb.setBounds(334, 0, 100, 50);
+		exportb.setBounds(300, 0, 134, 50);
 		exportb.setBackground(Color.LIGHT_GRAY);
+		
+		Button search = new Button("Suche");
+		search.setBounds(250, 0, 50, 50);
+		search.setBackground(Color.LIGHT_GRAY);
 		
 		Button yes = new Button("Ja");
 		yes.setBounds(74, 200, 100, 30);
 		
 		Button no = new Button("Nein");
 		no.setBounds(194, 200, 100, 30);
-		
 
-		
-
-			
-		
 		gesehenbutton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {	
-				
 				scroll_1.setVisible(false);
 				scroll_2.setVisible(true);
-				
 				gesehenbutton.setVisible(false);
 				watchbutton.setVisible(true);
 			}	
 		});
-		
 		
 		watchbutton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				scroll_1.setVisible(true);
 				scroll_2.setVisible(false);	
-				
-				
 				gesehenbutton.setVisible(true);
 				watchbutton.setVisible(false);
 			}	
@@ -423,7 +406,7 @@ public class AWLGui {
 				addframe.setVisible(true);			
 			}
 		});
-		
+
 		confirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -431,9 +414,7 @@ public class AWLGui {
 				addframe.setVisible(false);
 				try {
 					adder.addAnime(animename.getText(), genre.getText(), tags.getText(), gesehenboolean);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}	
+				} catch (IOException e1) {e1.printStackTrace();}
 			}	
 		});
 		
@@ -444,59 +425,43 @@ public class AWLGui {
 				EditAnime edit = new EditAnime();
 				try {
 					edit.editAnime(false, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
+				} catch (IOException e1) {e1.printStackTrace();}				
 			}
-			
-			
 		});
-		
-		
-		exportb.addActionListener(new ActionListener() {
 
+		exportb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				exporter.setVisible(true);				
 			}	
 		});
-		
-		
+	
 		yes.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				exporter.dispose();
 				TXTExport export = new TXTExport();
 				try {
 					export.export(path.getText());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				
+				} catch (IOException e1) {e1.printStackTrace();}			
 			}
-			
-			
 		});
 		
 		no.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				exporter.dispose();
-				
+				exporter.dispose();				
 			}
-			
-			
-			
 		});
 		
-		
-		count.setText("Es werden " + animecount + " Animes exportiert. Fortfahren?");
+		search.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				searchgui.setVisible(true);			
+			}
+		});
 
-	
+		count.setText("Es werden " + animecount + " Animes exportiert. Fortfahren?");
 		gesehenbutton.setVisible(true);
 		watchbutton.setVisible(false);
 		animename.setVisible(true);
@@ -517,6 +482,7 @@ public class AWLGui {
 		separator2.setVisible(true);
 		editanimelabel.setVisible(true);
 		confirme.setVisible(true);
+		search.setVisible(true);
 		addframe.add(genrelabel);
 		addframe.add(genre);
 		addframe.add(confirm);
@@ -547,19 +513,15 @@ public class AWLGui {
 		exporter.add(yes);
 		exporter.add(no);
 		exporter.add(path);
+		searchgui.add(searchbar);
 		gui.add(infos);
 		gui.add(add);
 		gui.add(watchbutton);
 		gui.add(gesehenbutton);
 		gui.add(exportb);
-
-		
+		gui.add(search);
 		gui.repaint();
-		
 		loadwindow.setVisible(false);
-		gui.setVisible(true);
-		
+		gui.setVisible(true);		
+		}
 	}
-
-	}
-
