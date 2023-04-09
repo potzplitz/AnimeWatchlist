@@ -22,16 +22,19 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import database.AddAnime;
 import database.EditAnime;
+import database.TXTExport;
 
 
 
@@ -55,13 +58,9 @@ public class AWLGui {
 	
 	private boolean gesehenboolean;
 	private boolean gesehenbooleane;
-	private String oldname;
 
 	private int geseheneanimes;
 	private int nichtgeseheneanimes;
-	
-	private int progressbar;
-	private int progressbaranime;
 
 	private String buttonpress;
 	
@@ -77,7 +76,12 @@ public class AWLGui {
 		addframe.setResizable(false);
 		addframe.setVisible(false);
 		
-		
+		JFrame exporter = new JFrame("Liste exportieren...");
+		exporter.setSize(400, 300);
+		exporter.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		exporter.setLayout(null);
+		exporter.setResizable(false);
+		exporter.setVisible(false);
 		
 		JLabel addanimelabel = new JLabel("Anime Name");
 		addanimelabel.setBounds(40, 10, 100, 30);
@@ -115,7 +119,7 @@ public class AWLGui {
 		
 		
 		JPanel gesehen = new JPanel();
-		gesehen.setBounds(0, 50, 250, 411);
+		gesehen.setLocation(0, 50);
 		gesehen.setBackground(Color.LIGHT_GRAY);
 		
 		JPanel infos = new JPanel();
@@ -126,7 +130,7 @@ public class AWLGui {
 		JProgressBar load = new JProgressBar();
 		
 		JPanel nichtgesehen = new JPanel();
-		nichtgesehen.setBounds(0, 50, 250, 411);
+		nichtgesehen.setLocation(0, 50);
 		nichtgesehen.setBackground(Color.LIGHT_GRAY);
 		
 		JLabel gesehenjn = new JLabel("Gesehen: ");
@@ -156,6 +160,24 @@ public class AWLGui {
 		
 		TextField genree = new TextField(null);
 		genree.setBounds(40, 160, 300, 30);
+		
+		JTextField path = new JTextField("Pfad festlegen");
+		path.setBounds(60, 100, 250, 30);
+		
+		JFileChooser chooser = new JFileChooser();
+		chooser.setVisible(false);
+		
+		JLabel exportinfo = new JLabel("Animes exportieren");
+		exportinfo.setBounds(114, 1, 300, 30);
+		exportinfo.setFont(exportinfo.getFont().deriveFont(15f));
+		
+		JLabel count = new JLabel();
+		count.setBounds(54, 170, 300, 30);
+		
+		JLabel separator3 = new JLabel("___________________________________________________________________________________");
+		separator3.setBounds(0, 14, 500, 30);
+		
+		
 		
 		JCheckBox gesehenboole = new JCheckBox("Gesehen");
 		gesehenboole.setBounds(150, 185, 100, 30);
@@ -246,9 +268,6 @@ public class AWLGui {
 			
 			loading.setText(filename);
 			
-
-			System.out.println(filename);
-			
 			JButton anime = new JButton(filename);
 			anime.setPreferredSize(new  Dimension(220, 50));
 			anime.setBackground(Color.LIGHT_GRAY);
@@ -266,33 +285,27 @@ public class AWLGui {
 					buttonname = buttonname.substring(1, buttonname.lastIndexOf("]"));
 					
 					animelabel.setText(buttonname);
+					animelabel.setToolTipText(buttonname);
 					try {
 						gesehenjn.setText("Gesehen:   " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3));
 						genrename.setText("Genre:        " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(1));
-					} catch (IOException e1) {e1.printStackTrace();}			
-					//temp
-					try {
 						tagse.setText(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(2));
 						genree.setText(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(1));
 						gesehenboole.setSelected(Boolean.parseBoolean(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3)));
 						animenamee.setText(buttonname);			
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}	
-		
+					} catch (IOException e1) {e1.printStackTrace();}			
+
 				}
 			});
 
 			if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("true")) {
 				gesehen.add(anime);
-				
 				geseheneanimes++;
 			} else if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("false")) {
 				nichtgesehen.add(anime);
-				
 				nichtgeseheneanimes++;
 			}
+
 			gesehen.repaint();
 			nichtgesehen.repaint();
 			gui.setSize(500, 499);
@@ -300,8 +313,10 @@ public class AWLGui {
 			gui.setSize(500, 500);	
 		}
 		
-		nichtgesehen.setLayout(new GridLayout(animecount, 1, 1 ,1));
-		gesehen.setLayout(new GridLayout(animecount, 1, 1 ,1));
+		
+		
+		nichtgesehen.setLayout(new GridLayout(nichtgeseheneanimes, 1, 1 ,1));
+		gesehen.setLayout(new GridLayout(geseheneanimes, 1, 1 ,1));
 		
 		edit.addActionListener(new ActionListener() {
 
@@ -333,6 +348,7 @@ public class AWLGui {
 		scroll_1.setBounds(0, 50, 250, 411);
 		scroll_1.getVerticalScrollBar().setUnitIncrement(10);
 		
+		
 		gui.add(scroll_1);
 		
 		final JScrollPane scroll_2 = new JScrollPane(nichtgesehen, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -355,11 +371,25 @@ public class AWLGui {
 		
 		Button add = new Button("+");
 		add.setBounds(434, 0, 50, 50);
+		add.setBackground(Color.LIGHT_GRAY);
 		
 		Button confirm = new Button("hinzufügen");
 		confirm.setBounds(135, 220, 100, 30);
 		
+		Button exportb = new Button("Liste exportieren");
+		exportb.setBounds(334, 0, 100, 50);
+		exportb.setBackground(Color.LIGHT_GRAY);
 		
+		Button yes = new Button("Ja");
+		yes.setBounds(74, 200, 100, 30);
+		
+		Button no = new Button("Nein");
+		no.setBounds(194, 200, 100, 30);
+		
+
+		
+
+			
 		
 		gesehenbutton.addActionListener(new ActionListener() {
 
@@ -373,6 +403,7 @@ public class AWLGui {
 				watchbutton.setVisible(true);
 			}	
 		});
+		
 		
 		watchbutton.addActionListener(new ActionListener() {
 			@Override
@@ -397,7 +428,7 @@ public class AWLGui {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				AddAnime adder = new AddAnime();
-				addframe.setVisible(true);
+				addframe.setVisible(false);
 				try {
 					adder.addAnime(animename.getText(), genre.getText(), tags.getText(), gesehenboolean);
 				} catch (IOException e1) {
@@ -424,7 +455,46 @@ public class AWLGui {
 		});
 		
 		
+		exportb.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				exporter.setVisible(true);				
+			}	
+		});
 		
+		
+		yes.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				exporter.dispose();
+				TXTExport export = new TXTExport();
+				try {
+					export.export(path.getText());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+			}
+			
+			
+		});
+		
+		no.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				exporter.dispose();
+				
+			}
+			
+			
+			
+		});
+		
+		
+		count.setText("Es werden " + animecount + " Animes exportiert. Fortfahren?");
 
 	
 		gesehenbutton.setVisible(true);
@@ -471,11 +541,18 @@ public class AWLGui {
 		infos.add(edit);
 		infos.add(separator2);
 		infos.add(delete);
+		exporter.add(exportinfo);
+		exporter.add(count);
+		exporter.add(separator3);
+		exporter.add(yes);
+		exporter.add(no);
+		exporter.add(path);
 		gui.add(infos);
 		gui.add(add);
 		gui.add(watchbutton);
 		gui.add(gesehenbutton);
-		
+		gui.add(exportb);
+
 		
 		gui.repaint();
 		
