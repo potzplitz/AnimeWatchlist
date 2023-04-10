@@ -13,11 +13,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -31,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 import database.AddAnime;
 import database.EditAnime;
@@ -82,13 +87,6 @@ public class AWLGui {
 		exporter.setLayout(null);
 		exporter.setResizable(false);
 		exporter.setVisible(false);
-		
-		JFrame searchgui = new JFrame("nach Anime suchen...");
-		searchgui.setSize(400, 300);
-		searchgui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		searchgui.setLayout(null);
-		searchgui.setResizable(false);
-		searchgui.setVisible(false);
 		
 		JLabel addanimelabel = new JLabel("Anime Name");
 		addanimelabel.setBounds(40, 10, 100, 30);
@@ -165,7 +163,7 @@ public class AWLGui {
 		genree.setBounds(40, 160, 300, 30);
 		
 		JTextField searchbar = new JTextField();
-		searchbar.setBounds(30, 30, 320, 30);
+		searchbar.setBounds(300, 1, 137, 50);
 		
 		JTextField path = new JTextField("Pfad festlegen");
 		path.setBounds(60, 100, 250, 30);
@@ -258,6 +256,8 @@ public class AWLGui {
 		
 		loadwindow.add(load);
 		load.setBounds(1, 138, 398, 20);
+		
+		
 
 		for(int i = 0; i < animecount; i++) {
 			Thread.sleep(0);
@@ -267,6 +267,7 @@ public class AWLGui {
 			filename = filename.substring(0, filename.lastIndexOf("."));
 			
 			loading.setText(filename);
+			
 			
 			JButton anime = new JButton(filename);
 			anime.setPreferredSize(new  Dimension(220, 50));
@@ -303,7 +304,46 @@ public class AWLGui {
 				nichtgeseheneanimes++;
 			}
 			
-			// search engine
+
+			searchbar.addKeyListener(new KeyAdapter() {
+				
+				@Override
+				public void keyReleased(KeyEvent e) {
+					
+					String searchInput = searchbar.getText().toLowerCase();
+					
+					String buttonName = anime.getText().toLowerCase();
+					 if (buttonName.contains(searchInput)) {
+				          System.out.println(searchInput);
+				          
+				          try {
+							if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonName + ".anime")).get(3).equals("true")) {
+							  gesehen.add(anime);
+							  gesehen.revalidate();
+					          gesehen.repaint();
+							} else {
+								nichtgesehen.add(anime);
+								nichtgesehen.revalidate();
+						        nichtgesehen.repaint();
+							}    
+						} catch (IOException e1) {e1.printStackTrace();}
+
+				        }else if(!buttonName.contains(searchInput)){
+				        	
+				       if(gesehen.isVisible()) {
+				        	gesehen.remove(anime);
+				        	gesehen.revalidate();
+				        	gesehen.repaint();
+				        }  	
+				        	
+				       if(nichtgesehen.isVisible()) {
+				           nichtgesehen.remove(anime);
+					       nichtgesehen.revalidate();
+					       nichtgesehen.repaint();
+				        	}
+				        }
+				    }
+		    	});
 
 			gesehen.repaint();
 			nichtgesehen.repaint();
@@ -311,6 +351,7 @@ public class AWLGui {
 			gui.repaint();
 			gui.setSize(500, 500);	
 		}
+		
 		
 		nichtgesehen.setLayout(new GridLayout(nichtgeseheneanimes, 1, 1 ,1));
 		gesehen.setLayout(new GridLayout(geseheneanimes, 1, 1 ,1));
@@ -366,13 +407,9 @@ public class AWLGui {
 		Button confirm = new Button("hinzufügen");
 		confirm.setBounds(135, 220, 100, 30);
 		
-		Button exportb = new Button("Liste exportieren");
-		exportb.setBounds(300, 0, 134, 50);
+		Button exportb = new Button("Export");
+		exportb.setBounds(250, 0, 50, 50);
 		exportb.setBackground(Color.LIGHT_GRAY);
-		
-		Button search = new Button("Suche");
-		search.setBounds(250, 0, 50, 50);
-		search.setBackground(Color.LIGHT_GRAY);
 		
 		Button yes = new Button("Ja");
 		yes.setBounds(74, 200, 100, 30);
@@ -453,13 +490,9 @@ public class AWLGui {
 				exporter.dispose();				
 			}
 		});
+
 		
-		search.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchgui.setVisible(true);			
-			}
-		});
+		
 
 		count.setText("Es werden " + animecount + " Animes exportiert. Fortfahren?");
 		gesehenbutton.setVisible(true);
@@ -482,7 +515,6 @@ public class AWLGui {
 		separator2.setVisible(true);
 		editanimelabel.setVisible(true);
 		confirme.setVisible(true);
-		search.setVisible(true);
 		addframe.add(genrelabel);
 		addframe.add(genre);
 		addframe.add(confirm);
@@ -513,13 +545,12 @@ public class AWLGui {
 		exporter.add(yes);
 		exporter.add(no);
 		exporter.add(path);
-		searchgui.add(searchbar);
+		gui.add(searchbar);
 		gui.add(infos);
 		gui.add(add);
 		gui.add(watchbutton);
 		gui.add(gesehenbutton);
 		gui.add(exportb);
-		gui.add(search);
 		gui.repaint();
 		loadwindow.setVisible(false);
 		gui.setVisible(true);		
