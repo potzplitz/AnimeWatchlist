@@ -36,8 +36,10 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -279,9 +281,16 @@ public class AWLGui {
 		
 		GetAnimeImage image = new GetAnimeImage();
 		
+		JPopupMenu popup = new JPopupMenu();
+		
+		JMenuItem rclickmenu = new JMenuItem("test");
+		popup.add(rclickmenu);
+		
+		
 		JLabel img = new JLabel();
 		img.setBounds(10, 100, 225, 324);
 		img.setBackground(Color.LIGHT_GRAY);
+		
 		
 		//image.apiReader("absolute-duo");
 		

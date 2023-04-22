@@ -4,9 +4,15 @@ import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,9 +23,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,6 +73,24 @@ public class SearchAnime {
 		JLabel img = new JLabel();
 		img.setBounds(33, 1, 225, 324);
 		img.setBackground(Color.LIGHT_GRAY);
+		
+		JPopupMenu popup = new JPopupMenu();
+		
+		JMenuItem namecopy = new JMenuItem("Name kopieren");
+		JMenuItem imgcopy = new JMenuItem("Bild kopieren");
+		JMenuItem addtolist = new JMenuItem("zur Liste hinzufügen");
+		JMenuItem copyjsonstring = new JMenuItem("JSONString der API kopieren");
+		
+		popup.add(namecopy);
+		popup.add(imgcopy);
+		popup.add(addtolist);
+		popup.add(copyjsonstring);
+		
+		
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		
+		
+		
 		
 		Button start = new Button("Suchen");
 		start.setBounds(197, 33, 100, 30);
@@ -118,6 +147,69 @@ public class SearchAnime {
 					searchfield.repaint();
 					searchfield.setSize(800, 500);
 					searchfield.repaint();
+					img.addMouseListener(new MouseListener() {
+
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							if(SwingUtilities.isRightMouseButton(e)) {
+							popup.show(e.getComponent(), e.getX(), e.getY());
+							
+							ActionListener listener = new ActionListener() {
+
+								@Override
+								public void actionPerformed(ActionEvent e1) {
+									
+									
+									
+									if(e1.getActionCommand().equals("Name kopieren")) {
+										
+										StringSelection stringSelection = new StringSelection(buttonpress);
+										clipboard.setContents(stringSelection, null);	
+										
+									} else if(e1.getActionCommand().equals("Bild kopieren")) {
+
+										StringSelection stringSelection = new StringSelection(firstEntry.getKey() + "");
+										
+										clipboard.setContents(stringSelection, null);
+										
+										
+										
+									} else if(e1.getActionCommand().equals("zur Liste hinzufügen")) {
+										
+										// [TODO]
+										
+									}else if(e1.getActionCommand().equals("JSONString der API kopieren")) {
+										
+										StringSelection stringSelection = new StringSelection(getApi.array());
+										clipboard.setContents(stringSelection, null);	
+										
+									}
+									
+								}
+								
+								
+							};
+							namecopy.addActionListener(listener);
+							imgcopy.addActionListener(listener);
+							addtolist.addActionListener(listener);
+							copyjsonstring.addActionListener(listener);
+				
+							}
+						}
+						@Override
+						public void mousePressed(MouseEvent e) {	
+						}
+						@Override
+						public void mouseReleased(MouseEvent e) {		
+						}
+						@Override
+						public void mouseEntered(MouseEvent e) {	
+						}
+						@Override
+						public void mouseExited(MouseEvent e) {		
+						}		
+					});
+					
 					
 					button.addActionListener(new ActionListener() {
 
