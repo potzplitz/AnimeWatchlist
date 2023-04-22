@@ -3,13 +3,10 @@ package database;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 public class AddAnime {
 	
-	public void addAnime(String animeName, String genre, String tags, boolean gesehen) throws IOException {
-		
-		System.out.println("Anime Name: " + animeName + " Genre: " + genre + " Tags: " + tags + " Gesehen: " + gesehen);
+	public void addAnime(String animeName, String genre, String tags, boolean gesehen, int rating) throws IOException {
 		
 		File file = new File("C:\\AnimeWatchList\\Database\\" + animeName + ".anime");
 		file.createNewFile();
@@ -19,6 +16,7 @@ public class AddAnime {
 		writer.println(genre);
 		writer.println(tags);
 		writer.println(gesehen);
+		writer.println(rating);
 		writer.close();
 		
 	}

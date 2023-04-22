@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 
 public class EditAnime {
 	
-public void editAnime(boolean state, String animeName, String genre, String tags, boolean gesehen) throws IOException {
+public void editAnime(boolean state, String animeName, String genre, String tags, boolean gesehen, int rating) throws IOException {
 		
 		System.out.println("Old Anime Name: "+ " Anime Name: " + animeName + " Genre: " + genre + " Tags: " + tags + " Gesehen: " + gesehen);
 		
@@ -22,6 +22,7 @@ public void editAnime(boolean state, String animeName, String genre, String tags
 		writer.println(genre);
 		writer.println(tags);
 		writer.println(gesehen);
+		writer.println(rating);
 		writer.close();
 
 		

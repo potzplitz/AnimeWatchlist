@@ -2,6 +2,7 @@ package preload;
 
 import java.io.IOException;
 
+import api.GetAnimeImage;
 import database.CreateFileStructure;
 import main.AWLGui;
 
@@ -15,6 +16,12 @@ public class Datachecker {
 		
 		AWLGui start = new AWLGui();
 		start.Gui();
+		
+		String name = "";
+		
+		
+		//GetAnimeImage image = new GetAnimeImage();
+	//	image.getAnimeImage(name);
 		
 	}
 

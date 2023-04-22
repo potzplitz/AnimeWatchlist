@@ -9,34 +9,45 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.TextField;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.text.html.HTMLDocument.Iterator;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import api.GetAnimeImage;
+import api.SearchAnime;
 import database.AddAnime;
 import database.EditAnime;
 import database.TXTExport;
@@ -53,6 +64,7 @@ class Frame extends JFrame{
 	    setDefaultCloseOperation(Frame.EXIT_ON_CLOSE);
 	    setResizable(false);
 	    setLayout(null);
+	    
 	    
 
 	  }
@@ -71,11 +83,14 @@ public class AWLGui {
 	
 	public void Gui() throws IOException, InterruptedException {
 		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		
 		Frame gui = new Frame("Anime Watch List");
 		gui.setVisible(false);
+		gui.setLocation(dim.width/2-gui.getSize().width/2, dim.height/2-gui.getSize().height/2);
 		
-		JFrame addframe = new JFrame("Anime hinzuf�gen...");
-		addframe.setSize(400, 300);
+		JFrame addframe = new JFrame("Anime hinzufügen...");
+		addframe.setSize(400, 400);
 		addframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		addframe.setLayout(null);
 		addframe.setResizable(false);
@@ -106,8 +121,14 @@ public class AWLGui {
 		TextField genre = new TextField(null);
 		genre.setBounds(40, 160, 300, 30);
 		
+		String[] ratingarray = {"0", "1", "2", "3", "4", "5"};
+		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		JComboBox ratingselect = new JComboBox(ratingarray);
+		ratingselect.setBounds(40, 210, 300, 30);
+		
 		JCheckBox gesehenbool = new JCheckBox("Gesehen");
-		gesehenbool.setBounds(150, 185, 100, 30);
+		gesehenbool.setBounds(150, 260, 100, 30);
 		gesehenbool.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -140,6 +161,9 @@ public class AWLGui {
 		JLabel genrename = new JLabel("Genre:  ");
 		genrename.setBounds(5, 50, 300, 30);
 		
+		JLabel rating = new JLabel("Bewertung: ");
+		rating.setBounds(5, 70, 300, 30);
+		
 		JLabel animelabel = new JLabel("Infos");
 		animelabel.setFont(new Font(null, Font.BOLD, 14));
 		animelabel.setBounds(10, 1, 300, 30);
@@ -152,6 +176,10 @@ public class AWLGui {
 		
 		JLabel genrelabele = new JLabel("Genre");
 		genrelabele.setBounds(40, 130, 100, 30);
+		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		JComboBox ratingselecte = new JComboBox(ratingarray);
+		ratingselecte.setBounds(40, 210, 300, 30);
 		
 		TextField animenamee = new TextField(null);
 		animenamee.setBounds(40, 40, 300, 30);
@@ -182,7 +210,7 @@ public class AWLGui {
 		separator3.setBounds(0, 14, 500, 30);
 
 		JCheckBox gesehenboole = new JCheckBox("Gesehen");
-		gesehenboole.setBounds(150, 185, 100, 30);
+		gesehenboole.setBounds(150, 260, 100, 30);
 		
 		gesehenboole.addItemListener(new ItemListener() {
 			@Override
@@ -196,7 +224,7 @@ public class AWLGui {
     	});
 		
 		Button confirme = new Button("Speichern");
-		confirme.setBounds(135, 220, 100, 30);
+		confirme.setBounds(135, 320, 100, 30);
 		
 		JLabel editanimelabel = new JLabel();
 		editanimelabel.setBounds(20, 1, 400, 30);
@@ -214,17 +242,15 @@ public class AWLGui {
 		Button edit = new Button("Anime bearbeiten");
 		edit.setBounds(123, 377, 100, 30);
 		
-		Button delete = new Button("Anime l�schen");
+		Button delete = new Button("Anime löschen");
 		delete.setBounds(10, 377, 100, 30);
 		
 		JFrame editwindow = new JFrame("Anime bearbeiten [WORK IN PROGRESS]");
-		editwindow.setSize(400, 300);
+		editwindow.setSize(400, 400);
 		editwindow.setResizable(false);
 		editwindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		editwindow.setLayout(null);
 		editwindow.setVisible(false);
-		
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		JFrame loadwindow = new JFrame("Datenbank wird gelesen...");
 		loadwindow.setSize(400, 200);
@@ -251,19 +277,41 @@ public class AWLGui {
 		label.setVisible(true);
 		loadwindow.add(label);
 		
+		GetAnimeImage image = new GetAnimeImage();
+		
+		JLabel img = new JLabel();
+		img.setBounds(10, 100, 225, 324);
+		img.setBackground(Color.LIGHT_GRAY);
+		
+		//image.apiReader("absolute-duo");
+		
+		//URL imageget = new URL(image.GetImage());
+		
+		//img.setIcon(new ImageIcon(ImageIO.read(imageget)));
+
+		
 		load.setMinimum(0);
 		load.setMaximum(animecount + 1);
 		
 		loadwindow.add(load);
 		load.setBounds(1, 138, 398, 20);
 		
-		
+		Object[] options = {"OK"};
+    	Icon icon = UIManager.getIcon("OptionPane.InfoIcon");
+    	
 
 		for(int i = 0; i < animecount; i++) {
 			Thread.sleep(0);
 			load.setValue(i);
 
 			String filename = listOfFilesGesehen[i].getName() + "";	
+			File del = new File("C:\\AnimeWatchList\\Database\\" + filename);
+			
+			if(!filename.contains(".anime")) {
+				del.delete();
+				JOptionPane.showOptionDialog(null, "Fehlerhafter Datenbankeintrag: " + filename + ". Dieser wurde gelöscht.", "Info", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, options, options[0]);	
+			} else {
+			
 			filename = filename.substring(0, filename.lastIndexOf("."));
 			
 			loading.setText(filename);
@@ -286,14 +334,55 @@ public class AWLGui {
 					animelabel.setText(buttonname);
 					animelabel.setToolTipText(buttonname);
 					try {
-						gesehenjn.setText("Gesehen:   " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3));
-						genrename.setText("Genre:        " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(1));
+						gesehenjn.setText("Gesehen:      " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3));
+						genrename.setText("Genre:           " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(1));
+						rating.setText("Bewertung:  " + Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(4) + "/5");
+						
 						tagse.setText(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(2));
 						genree.setText(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(1));
 						gesehenboole.setSelected(Boolean.parseBoolean(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(3)));
+						ratingselecte.setSelectedItem(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonname + ".anime")).get(4));
 						animenamee.setText(buttonname);			
-					} catch (IOException e1) {e1.printStackTrace();}			
+					} catch (IOException e1) {e1.printStackTrace();}
+					
+					animelabel.addMouseListener(new MouseListener() {
+
+						@Override
+						public void mouseClicked(MouseEvent e) {}
+						@Override
+						public void mousePressed(MouseEvent e) {		}
+						@Override
+						public void mouseReleased(MouseEvent e) {
+							StringSelection stringSelection = new StringSelection(anime.getText());
+							Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+							clipboard.setContents(stringSelection, null);	
+							animelabel.setText(anime.getText() + " [kopiert]");
+						}
+						@Override
+						public void mouseEntered(MouseEvent e) {}
+						@Override
+						public void mouseExited(MouseEvent e) {}	
+					});
 				}
+			});
+			
+			anime.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseClicked(MouseEvent e) {}
+				@Override
+				public void mousePressed(MouseEvent e) {}
+				@Override
+				public void mouseReleased(MouseEvent e) {}
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					anime.setToolTipText(anime.getText());	
+					anime.setBackground(Color.decode("#adc5e0"));
+				}
+				@Override
+				public void mouseExited(MouseEvent e) {
+					anime.setToolTipText("");	
+					anime.setBackground(Color.LIGHT_GRAY);
+				}	
 			});
 
 			if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + filename + ".anime")).get(3).equals("true")) {
@@ -303,19 +392,16 @@ public class AWLGui {
 				nichtgesehen.add(anime);
 				nichtgeseheneanimes++;
 			}
-			
-
 			searchbar.addKeyListener(new KeyAdapter() {
 				
 				@Override
 				public void keyReleased(KeyEvent e) {
 					
 					String searchInput = searchbar.getText().toLowerCase();
-					
 					String buttonName = anime.getText().toLowerCase();
+					
+					
 					 if (buttonName.contains(searchInput)) {
-				          System.out.println(searchInput);
-				          
 				          try {
 							if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\Database\\" + buttonName + ".anime")).get(3).equals("true")) {
 							  gesehen.add(anime);
@@ -327,29 +413,28 @@ public class AWLGui {
 						        nichtgesehen.repaint();
 							}    
 						} catch (IOException e1) {e1.printStackTrace();}
-
 				        }else if(!buttonName.contains(searchInput)){
-				        	
-				       if(gesehen.isVisible()) {
-				        	gesehen.remove(anime);
-				        	gesehen.revalidate();
-				        	gesehen.repaint();
-				        }  	
-				        	
-				       if(nichtgesehen.isVisible()) {
-				           nichtgesehen.remove(anime);
-					       nichtgesehen.revalidate();
-					       nichtgesehen.repaint();
+				        	if(gesehen.isVisible()) {
+				        		gesehen.remove(anime);
+				        		gesehen.revalidate();
+				        		gesehen.repaint();
+				        }  		
+				        	if(nichtgesehen.isVisible()) {
+				        		nichtgesehen.remove(anime);
+				        		nichtgesehen.revalidate();
+				        		nichtgesehen.repaint();
 				        	}
-				        }
 				    }
-		    	});
+				}
+		    });
+			
 
 			gesehen.repaint();
 			nichtgesehen.repaint();
 			gui.setSize(500, 499);
 			gui.repaint();
 			gui.setSize(500, 500);	
+			}
 		}
 		
 		
@@ -370,7 +455,9 @@ public class AWLGui {
 						buttonname = buttonname.substring(1, buttonname.lastIndexOf("]"));
 						EditAnime edit = new EditAnime();
 						try {
-							edit.editAnime(true, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane);
+							
+							System.out.println(ratingselecte.getSelectedItem());
+							edit.editAnime(true, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane, Integer.parseInt(ratingselecte.getSelectedItem() + ""));
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}	
@@ -379,6 +466,9 @@ public class AWLGui {
 			}	
 		});
 
+		
+		
+		
 		final JScrollPane scroll_1 = new JScrollPane(gesehen, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll_1.setBounds(0, 50, 250, 411);
@@ -404,8 +494,8 @@ public class AWLGui {
 		add.setBounds(434, 0, 50, 50);
 		add.setBackground(Color.LIGHT_GRAY);
 		
-		Button confirm = new Button("hinzuf�gen");
-		confirm.setBounds(135, 220, 100, 30);
+		Button confirm = new Button("hinzufügen");
+		confirm.setBounds(135, 320, 100, 30);
 		
 		Button exportb = new Button("Export");
 		exportb.setBounds(250, 0, 50, 50);
@@ -416,6 +506,21 @@ public class AWLGui {
 		
 		Button no = new Button("Nein");
 		no.setBounds(194, 200, 100, 30);
+		
+		Button filechooser = new Button("...");
+		filechooser.setBounds(309, 99, 30, 30);
+		
+		Button getanime = new Button("Animes suchen");
+		getanime.setBounds(140, 0, 100, 30);
+		
+		
+		getanime.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SearchAnime anime = new SearchAnime();
+				anime.search();
+			}
+		});
 
 		gesehenbutton.addActionListener(new ActionListener() {
 			@Override
@@ -450,21 +555,27 @@ public class AWLGui {
 				AddAnime adder = new AddAnime();
 				addframe.setVisible(false);
 				try {
-					adder.addAnime(animename.getText(), genre.getText(), tags.getText(), gesehenboolean);
+					adder.addAnime(animename.getText(), genre.getText(), tags.getText(), gesehenboolean, Integer.parseInt(ratingselect.getSelectedItem() + ""));
 				} catch (IOException e1) {e1.printStackTrace();}
 			}	
 		});
 		
 		delete.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				EditAnime edit = new EditAnime();
-				try {
-					edit.editAnime(false, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane);
-				} catch (IOException e1) {e1.printStackTrace();}				
-			}
-		});
+            @Override
+            public void actionPerformed(ActionEvent e) {	
+            	Object[] options = {"Ja", "Nein"};
+            	Icon icon = UIManager.getIcon("OptionPane.warningIcon");
+            	int antwort = JOptionPane.showOptionDialog(null, "Möchtest du " + animenamee.getText() + " wirklich löschen?", animenamee.getText() + " löschen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icon, options, options[0]);
+               
+            	if (antwort == JOptionPane.YES_OPTION) {
+                    EditAnime edit = new EditAnime();
+                    try {
+                        edit.editAnime(false, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane, Integer.parseInt(ratingselecte.getSelectedItem() + ""));
+                    } catch (NumberFormatException | IOException e1) { e1.printStackTrace();}
+                } else if (antwort == JOptionPane.NO_OPTION) {}
+            }
+        });
 
 		exportb.addActionListener(new ActionListener() {
 			@Override
@@ -491,30 +602,30 @@ public class AWLGui {
 			}
 		});
 
+		filechooser.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Bilder", "png", "jpg");
+				
+				JFileChooser fileselect1 = new JFileChooser("watchlist.txt");
+				fileselect1.showDialog(null, "Dateipfad auswählen...");
+				fileselect1.setCurrentDirectory(new java.io.File("."));
+				fileselect1.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fileselect1.setAcceptAllFileFilterUsed(false);
+				path.setText(fileselect1.getSelectedFile().getAbsolutePath());
+				
+				
+				fileselect1.setVisible(true);
+			}	
+		});
 		
+		
+		
+			//if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\config\\config.json")).get(3).equals("true"))
 		
 
 		count.setText("Es werden " + animecount + " Animes exportiert. Fortfahren?");
-		gesehenbutton.setVisible(true);
-		watchbutton.setVisible(false);
-		animename.setVisible(true);
-		addanimelabel.setVisible(true);
-		add.setVisible(true);
-		tags.setVisible(true);
-		taglabel.setVisible(true);
-		gesehenbool.setVisible(true);
-		confirm.setVisible(true);
-		genre.setVisible(true);
-		genrelabel.setVisible(true);
-		infos.setVisible(true);
-		gesehenjn.setVisible(true);
-		animelabel.setVisible(true);
-		separator.setVisible(true);
-		genrename.setVisible(true);
-		edit.setVisible(true);
-		separator2.setVisible(true);
-		editanimelabel.setVisible(true);
-		confirme.setVisible(true);
 		addframe.add(genrelabel);
 		addframe.add(genre);
 		addframe.add(confirm);
@@ -523,6 +634,8 @@ public class AWLGui {
 		addframe.add(tags);
 		addframe.add(animename);
 		addframe.add(addanimelabel);
+		addframe.add(ratingselect);
+		addframe.add(getanime);
 		editwindow.add(genrelabele);
 		editwindow.add(genree);
 		editwindow.add(confirme);
@@ -532,6 +645,7 @@ public class AWLGui {
 		editwindow.add(animenamee);
 		editwindow.add(addanimelabele);
 		editwindow.add(editanimelabel);
+		editwindow.add(ratingselecte);
 		infos.add(gesehenjn);
 		infos.add(animelabel, SwingConstants.CENTER);
 		infos.add(separator);
@@ -539,12 +653,15 @@ public class AWLGui {
 		infos.add(edit);
 		infos.add(separator2);
 		infos.add(delete);
+		infos.add(rating);
+		infos.add(img);
 		exporter.add(exportinfo);
 		exporter.add(count);
 		exporter.add(separator3);
 		exporter.add(yes);
 		exporter.add(no);
 		exporter.add(path);
+		exporter.add(filechooser);
 		gui.add(searchbar);
 		gui.add(infos);
 		gui.add(add);
@@ -552,6 +669,7 @@ public class AWLGui {
 		gui.add(gesehenbutton);
 		gui.add(exportb);
 		gui.repaint();
+		watchbutton.setVisible(false);
 		loadwindow.setVisible(false);
 		gui.setVisible(true);		
 		}
