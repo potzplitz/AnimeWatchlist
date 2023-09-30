@@ -8,9 +8,14 @@ public class AddAnime {
 	
 	public void addAnime(String animeName, String genre, String tags, boolean gesehen, int rating) throws IOException {
 		
+		
+		// .anime-Datei erstellen
 		File file = new File("C:\\AnimeWatchList\\Database\\" + animeName + ".anime");
 		file.createNewFile();
 		
+		
+		
+		// Informationen in die datei schreiben
 		PrintWriter writer = new PrintWriter("C:\\AnimeWatchList\\Database\\" + animeName + ".anime", "UTF-8");
 		writer.println(animeName);
 		writer.println(genre);
@@ -18,6 +23,8 @@ public class AddAnime {
 		writer.println(gesehen);
 		writer.println(rating);
 		writer.close();
+		
+		
 		
 	}
 

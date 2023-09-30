@@ -6,13 +6,15 @@ import java.io.PrintWriter;
 
 public class EditAnime {
 	
-public void editAnime(boolean state, String animeName, String genre, String tags, boolean gesehen, int rating) throws IOException {
+	
+// Variablen für das Editieren    löschen         name            genre          tags          gesehen      bewertung
+     public void editAnime(boolean state, String animeName, String genre, String tags, boolean gesehen, int rating) throws IOException {
 		
-		System.out.println("Old Anime Name: "+ " Anime Name: " + animeName + " Genre: " + genre + " Tags: " + tags + " Gesehen: " + gesehen);
-		
+    	 // Anime datenbankdatei wird erstellt
 		File file = new File("C:\\AnimeWatchList\\Database\\" + animeName + ".anime");
 		
-		if(state == true) {
+		// testen, ob gelöscht werden soll oder nicht
+		if(state == true) { // nein
 		
 		file.delete();
 		file.createNewFile();
@@ -26,7 +28,7 @@ public void editAnime(boolean state, String animeName, String genre, String tags
 		writer.close();
 
 		
-		} else if(state == false) {
+		} else if(state == false) { // ja
 			
 			file.delete();
 			

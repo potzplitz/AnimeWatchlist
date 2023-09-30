@@ -2,10 +2,12 @@ package preload;
 
 import java.io.IOException;
 
-import api.GetAnimeImage;
+import api.HTTPApi;
 import database.CreateFileStructure;
+import database.Import;
 import main.AWLGui;
 
+@SuppressWarnings("unused")
 public class Datachecker {
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
@@ -18,6 +20,9 @@ public class Datachecker {
 		start.Gui();
 		
 		String name = "";
+		
+	//	Import importer = new Import();
+	//	importer.AnimeImport();
 		
 		
 		//GetAnimeImage image = new GetAnimeImage();

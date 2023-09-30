@@ -48,21 +48,22 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import api.GetAnimeImage;
+import api.HTTPApi;
 import api.SearchAnime;
 import database.AddAnime;
 import database.EditAnime;
 import database.TXTExport;
+import settings.Settings;
 
 
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unused" })
 class Frame extends JFrame{
 	 
 	Frame(String title) {
 	    super(title);
 	    
-	    setSize(500, 500);
+	    setSize(600, 500);
 	    setDefaultCloseOperation(Frame.EXIT_ON_CLOSE);
 	    setResizable(false);
 	    setLayout(null);
@@ -75,13 +76,15 @@ class Frame extends JFrame{
 
 public class AWLGui {
 	
-	private boolean gesehenboolean;
-	private boolean gesehenbooleane;
+	// klassenübergeifende variablen erstellen
+	
+	private boolean gesehenboolean; // gesehen ob ja oder nein
+	private boolean gesehenbooleane; // gesehen ob ja oder nein (editieren)
 
-	private int geseheneanimes;
-	private int nichtgeseheneanimes;
+	private int geseheneanimes; // anzahl an gesehenen animes
+	private int nichtgeseheneanimes; // anzahl an nicht gesehenen animes
 
-	private String buttonpress;
+	private String buttonpress; // was auf dem gedrücktem button draufsteht
 	
 	public void Gui() throws IOException, InterruptedException {
 		
@@ -147,7 +150,7 @@ public class AWLGui {
 		gesehen.setBackground(Color.LIGHT_GRAY);
 		
 		JPanel infos = new JPanel();
-		infos.setBounds(250, 50, 250, 450);
+		infos.setBounds(250, 50, 350, 450);
 		infos.setLayout(null);
 		infos.setBackground(Color.WHITE);
 		
@@ -193,7 +196,7 @@ public class AWLGui {
 		genree.setBounds(40, 160, 300, 30);
 		
 		JTextField searchbar = new JTextField();
-		searchbar.setBounds(300, 1, 137, 50);
+		searchbar.setBounds(250, 1, 137, 50);
 		
 		JTextField path = new JTextField("Pfad festlegen");
 		path.setBounds(60, 100, 250, 30);
@@ -242,10 +245,13 @@ public class AWLGui {
 		int animecount = file.list().length;
 
 		Button edit = new Button("Anime bearbeiten");
-		edit.setBounds(123, 377, 100, 30);
+		edit.setBounds(113, 377, 100, 30);
 		
 		Button delete = new Button("Anime löschen");
-		delete.setBounds(10, 377, 100, 30);
+		delete.setBounds(5, 377, 100, 30);
+		
+		Button favourite = new Button("Favorit");
+		favourite.setBounds(223, 377, 100, 30);
 		
 		JFrame editwindow = new JFrame("Anime bearbeiten [WORK IN PROGRESS]");
 		editwindow.setSize(400, 400);
@@ -279,7 +285,8 @@ public class AWLGui {
 		label.setVisible(true);
 		loadwindow.add(label);
 		
-		GetAnimeImage image = new GetAnimeImage();
+		@SuppressWarnings("unused")
+		HTTPApi image = new HTTPApi();
 		
 		JPopupMenu popup = new JPopupMenu();
 		
@@ -292,11 +299,11 @@ public class AWLGui {
 		img.setBackground(Color.LIGHT_GRAY);
 		
 		
-		//image.apiReader("absolute-duo");
+	//	image.apiReader("absolute-duo");
 		
-		//URL imageget = new URL(image.GetImage());
+	//	URL imageget = new URL(image.GetImage());
 		
-		//img.setIcon(new ImageIcon(ImageIO.read(imageget)));
+	//	img.setIcon(new ImageIcon(ImageIO.read(imageget)));
 
 		
 		load.setMinimum(0);
@@ -440,9 +447,9 @@ public class AWLGui {
 
 			gesehen.repaint();
 			nichtgesehen.repaint();
-			gui.setSize(500, 499);
+			gui.setSize(600, 499);
 			gui.repaint();
-			gui.setSize(500, 500);	
+			gui.setSize(600, 500);	
 			}
 		}
 		
@@ -498,17 +505,26 @@ public class AWLGui {
 		Button watchbutton = new Button("nicht gesehen " + "(" + nichtgeseheneanimes + " Animes)");
 		watchbutton.setBounds(0, 0, 250, 50);
 		
+		Button settings = new Button("Settings");
+		//settings.setFont(new Font("Arial", Font.PLAIN, 23));
+		settings.setBounds(484, 0, 50, 50);
+		settings.setBackground(Color.LIGHT_GRAY);
+		
 		Button add = new Button("+");
 		add.setFont(new Font("Arial", Font.PLAIN, 23));
-		add.setBounds(434, 0, 50, 50);
+		add.setBounds(534, 0, 50, 50);
 		add.setBackground(Color.LIGHT_GRAY);
 		
 		Button confirm = new Button("hinzufügen");
 		confirm.setBounds(135, 320, 100, 30);
 		
 		Button exportb = new Button("Export");
-		exportb.setBounds(250, 0, 50, 50);
+		exportb.setBounds(434, 0, 50, 50);
 		exportb.setBackground(Color.LIGHT_GRAY);
+		
+		Button searchfilter = new Button("Filter");
+		searchfilter.setBounds(384, 0, 50, 50);
+		searchfilter.setBackground(Color.LIGHT_GRAY);
 		
 		Button yes = new Button("Ja");
 		yes.setBounds(74, 200, 100, 30);
@@ -522,6 +538,15 @@ public class AWLGui {
 		Button getanime = new Button("Animes suchen");
 		getanime.setBounds(140, 0, 100, 30);
 		
+		
+		settings.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Settings settings = new Settings();
+				settings.Setting();
+			}
+		});
 		
 		getanime.addActionListener(new ActionListener() {
 			@Override
@@ -615,6 +640,7 @@ public class AWLGui {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				@SuppressWarnings("unused")
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Bilder", "png", "jpg");
 				
 				JFileChooser fileselect1 = new JFileChooser("watchlist.txt");
@@ -660,6 +686,7 @@ public class AWLGui {
 		infos.add(separator);
 		infos.add(genrename);
 		infos.add(edit);
+		infos.add(favourite);
 		infos.add(separator2);
 		infos.add(delete);
 		infos.add(rating);
@@ -677,6 +704,8 @@ public class AWLGui {
 		gui.add(watchbutton);
 		gui.add(gesehenbutton);
 		gui.add(exportb);
+		gui.add(settings);
+		gui.add(searchfilter);
 		gui.repaint();
 		watchbutton.setVisible(false);
 		loadwindow.setVisible(false);
