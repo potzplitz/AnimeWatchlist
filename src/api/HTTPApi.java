@@ -18,12 +18,6 @@ public class HTTPApi {
 	private String arraystr;
 	public  String malurl;
 	
-	public void ApiPhraser() throws IOException {
-		
-		
-		//System.out.println(imgurl);
-		
-	}
 	
 	public void apiReader(String name) throws IOException {
 
@@ -31,7 +25,7 @@ public class HTTPApi {
 		
 		String url = "https://api.jikan.moe/v4/anime?q=" + name;
 		
-		System.out.println("Request >> " + url);
+		System.out.println("Request  >> " + url);
 		
 		URL apireq = new URL(url);
 		URLConnection con = apireq.openConnection();

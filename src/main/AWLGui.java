@@ -51,6 +51,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import api.HTTPApi;
 import api.SearchAnime;
 import database.AddAnime;
+import database.AddAnimeGUI;
 import database.EditAnime;
 import database.TXTExport;
 import settings.Settings;
@@ -94,12 +95,7 @@ public class AWLGui {
 		gui.setVisible(false);
 		gui.setLocation(dim.width/2-gui.getSize().width/2, dim.height/2-gui.getSize().height/2);
 		
-		JFrame addframe = new JFrame("Anime hinzufügen...");
-		addframe.setSize(400, 400);
-		addframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		addframe.setLayout(null);
-		addframe.setResizable(false);
-		addframe.setVisible(false);
+		
 		
 		JFrame exporter = new JFrame("Liste exportieren...");
 		exporter.setSize(400, 300);
@@ -108,42 +104,8 @@ public class AWLGui {
 		exporter.setResizable(false);
 		exporter.setVisible(false);
 		
-		JLabel addanimelabel = new JLabel("Anime Name");
-		addanimelabel.setBounds(40, 10, 100, 30);
 		
-		JLabel taglabel = new JLabel("Tags (Tags mit Komma trennen)");
-		taglabel.setBounds(40, 70, 200, 30);
 		
-		JLabel genrelabel = new JLabel("Genre");
-		genrelabel.setBounds(40, 130, 100, 30);
-		
-		TextField animename = new TextField(null);
-		animename.setBounds(40, 40, 300, 30);
-		
-		TextField tags = new TextField(null);
-		tags.setBounds(40, 100, 300, 30);
-		
-		TextField genre = new TextField(null);
-		genre.setBounds(40, 160, 300, 30);
-		
-		String[] ratingarray = {"0", "1", "2", "3", "4", "5"};
-		
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		JComboBox ratingselect = new JComboBox(ratingarray);
-		ratingselect.setBounds(40, 210, 300, 30);
-		
-		JCheckBox gesehenbool = new JCheckBox("Gesehen");
-		gesehenbool.setBounds(150, 260, 100, 30);
-		gesehenbool.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange() == ItemEvent.SELECTED) {
-			    	gesehenboolean = true;
-				} else if(e.getStateChange() == ItemEvent.DESELECTED) {		
-					gesehenboolean = false;		
-				}		
-	     	}	
-    	});
 
 		JPanel gesehen = new JPanel();
 		gesehen.setLocation(0, 50);
@@ -182,17 +144,19 @@ public class AWLGui {
 		JLabel genrelabele = new JLabel("Genre");
 		genrelabele.setBounds(40, 130, 100, 30);
 		
+		String[] ratingarray = {"0", "1", "2", "3", "4", "5"};
+		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		JComboBox ratingselecte = new JComboBox(ratingarray);
 		ratingselecte.setBounds(40, 210, 300, 30);
 		
-		TextField animenamee = new TextField(null);
+		TextField animenamee = new TextField(null, 16);
 		animenamee.setBounds(40, 40, 300, 30);
 		
-		TextField tagse = new TextField(null);
+		TextField tagse = new TextField(null, 16);
 		tagse.setBounds(40, 100, 300, 30);
 		
-		TextField genree = new TextField(null);
+		TextField genree = new TextField(null, 16);
 		genree.setBounds(40, 160, 300, 30);
 		
 		JTextField searchbar = new JTextField();
@@ -515,8 +479,7 @@ public class AWLGui {
 		add.setBounds(534, 0, 50, 50);
 		add.setBackground(Color.LIGHT_GRAY);
 		
-		Button confirm = new Button("hinzufügen");
-		confirm.setBounds(135, 320, 100, 30);
+		
 		
 		Button exportb = new Button("Export");
 		exportb.setBounds(434, 0, 50, 50);
@@ -535,8 +498,7 @@ public class AWLGui {
 		Button filechooser = new Button("...");
 		filechooser.setBounds(309, 99, 30, 30);
 		
-		Button getanime = new Button("Animes suchen");
-		getanime.setBounds(140, 0, 100, 30);
+		
 		
 		
 		settings.addActionListener(new ActionListener() {
@@ -548,11 +510,13 @@ public class AWLGui {
 			}
 		});
 		
-		getanime.addActionListener(new ActionListener() {
+		add.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				SearchAnime anime = new SearchAnime();
-				anime.search();
+			public void actionPerformed(ActionEvent e) {				
+				
+				AddAnimeGUI adder = new AddAnimeGUI();
+				adder.AnimeGUI("", false);
+				
 			}
 		});
 
@@ -576,23 +540,7 @@ public class AWLGui {
 			}	
 		});
 		
-		add.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {				
-				addframe.setVisible(true);			
-			}
-		});
-
-		confirm.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AddAnime adder = new AddAnime();
-				addframe.setVisible(false);
-				try {
-					adder.addAnime(animename.getText(), genre.getText(), tags.getText(), gesehenboolean, Integer.parseInt(ratingselect.getSelectedItem() + ""));
-				} catch (IOException e1) {e1.printStackTrace();}
-			}	
-		});
+		
 		
 		delete.addActionListener(new ActionListener() {
 
@@ -661,16 +609,7 @@ public class AWLGui {
 		
 
 		count.setText("Es werden " + animecount + " Animes exportiert. Fortfahren?");
-		addframe.add(genrelabel);
-		addframe.add(genre);
-		addframe.add(confirm);
-		addframe.add(gesehenbool);
-		addframe.add(taglabel);
-		addframe.add(tags);
-		addframe.add(animename);
-		addframe.add(addanimelabel);
-		addframe.add(ratingselect);
-		addframe.add(getanime);
+		
 		editwindow.add(genrelabele);
 		editwindow.add(genree);
 		editwindow.add(confirme);

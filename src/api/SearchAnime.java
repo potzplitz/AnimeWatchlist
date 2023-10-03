@@ -2,7 +2,6 @@ package api;
 
 import java.awt.Button;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -13,10 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,31 +21,33 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import database.AddAnime;
+import database.AddAnimeGUI;
 
 public class SearchAnime {
 	
-	public String buttonpress;
-	@SuppressWarnings("unused")
-	private int val = 0;
+	private String buttonpress;
+	private String pressedimage;
+	private String pressedlink;
+	
 	private HTTPApi getApi = new HTTPApi();
+	private AddAnime addAnime = new AddAnime();
 	
 	private JPanel panel;
 	
-	private String selection;
-	private String malurl;
+	private int result;
 	
 	public void search() {
+		
+		// GUI components erstellen
 		
 		JFrame searchfield = new JFrame("nach Anime suchen");
 		searchfield.setSize(800, 500);
@@ -57,6 +55,13 @@ public class SearchAnime {
 		searchfield.setLayout(null);
 		searchfield.setResizable(false);
 		searchfield.setVisible(true);
+		
+		JFrame animeInfos = new JFrame("Infos");
+		animeInfos.setSize(300, 300);
+		animeInfos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		animeInfos.setLayout(null);
+		animeInfos.setResizable(false);
+		animeInfos.setVisible(false);
 		
 		panel = new JPanel(); 
 		panel.setBackground(Color.LIGHT_GRAY);
@@ -76,26 +81,23 @@ public class SearchAnime {
 		JTextField search = new JTextField("nach Animes suchen");
 		search.setBounds(1, 1, 500, 30);
 		
-		JLabel img = new JLabel();
-		img.setBounds(33, 1, 225, 324);
-		img.setBackground(Color.LIGHT_GRAY);
+		JLabel separator = new JLabel("____________________________________________________________________________________________________");
+		separator.setBounds(0, 330, 500, 30);
 		
-		JPopupMenu popup = new JPopupMenu();
+		JLabel titel = new JLabel("", SwingConstants.CENTER);
+		titel.setBounds(0, 320, 283, 30);
 		
-		JMenuItem addtolist = new JMenuItem("zur Liste hinzufügen");
-		JMenuItem namecopy = new JMenuItem("Name kopieren");
-		JMenuItem imgcopy = new JMenuItem("Bild kopieren");
-		JMenuItem copyjsonstring = new JMenuItem("JSONString der API kopieren");
-		JMenuItem openinmal = new JMenuItem("in MyAnimeList öffnen");
+		JLabel img = new JLabel("", SwingConstants.CENTER);
+		img.setBounds(0, 1, 283, 324);
+		img.setBackground(Color.GRAY);
 		
-		popup.add(addtolist);
-		popup.add(namecopy);
-		popup.add(imgcopy);
-		popup.add(copyjsonstring);
-		popup.add(openinmal);
+		JLabel results = new JLabel("Ergebnisse: 0");
+		results.setBounds(1, 37, 100, 30);
 		
+		// kopierfunktion erstellen
 		
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
 		
 		
 		
@@ -109,7 +111,7 @@ public class SearchAnime {
 				HTTPApi getApi = new HTTPApi();
 				try {
 					getApi.apiReader(search.getText());
-					System.out.println(getApi.GetImage());
+					
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -117,11 +119,11 @@ public class SearchAnime {
 				JSONObject obj = new JSONObject(getApi.array());
 				JSONArray a = obj.getJSONArray("data");
 				
-				ArrayList<String> list = new ArrayList<String>();
-				
 				panel.removeAll();
 				
 				for(int i = 0; i < getApi.arrayLength(); i++) {
+					
+					result = i;
 					
 					JButton button = new JButton();
 
@@ -132,30 +134,35 @@ public class SearchAnime {
 					
 					panel.remove(button);
 					
-					Map<String, JButton> buttonMap = new HashMap<>();
-					Map<String, JButton> linkmap = new HashMap<>();
-					Map<String, JButton> malmap = new HashMap<>();
+					// Maps erstellen damit button und wert miteinander verknüpft werden können
 					
-					buttonMap.put(a.getJSONObject(i).getString("title"), button);
-					buttonpress = buttonMap.keySet() + "";
-
+					Map<String, JButton> buttonMap = new HashMap<>(); // name und keypress in einer map
+					Map<String, JButton> linkmap = new HashMap<>(); // link des bildes und keypress in einer map
+					Map<String, JButton> malmap = new HashMap<>(); // my anime list link und keypress in einer map
+					Map<String, JButton> genremap = new HashMap<>();
 					
-					linkmap.put(a.getJSONObject(i).getJSONObject("images").getJSONObject("jpg").getString("image_url"), button);
-					malmap.put(getApi.malurl(), button);
 					
-					Map.Entry<String, JButton> firstEntry = linkmap.entrySet().iterator().next();
-					selection = firstEntry.getKey();
-					Map.Entry<String, JButton> malentry = malmap.entrySet().iterator().next();
+					// Maps mit infos bestücken
 					
+					buttonMap.put(a.getJSONObject(i).getString("title"), button); // titel und button werden in eine map gepackt
+					linkmap.put(a.getJSONObject(i).getJSONObject("images").getJSONObject("jpg").getString("image_url"), button); // link des bildes und button werden in eine map gepackt
+					malmap.put(getApi.malurl(), button); // my anime list und button werden in eine map gepackt
 					
 					
 					
+					//genremap.put(, button);
 					
+					// map entrys erstellen, damit gedrückte buttonelemente einfacher ausgegeben werden können
 					
-					list.add(i, button.getText());
+					Map.Entry<String, JButton> picturelinkentry = linkmap.entrySet().iterator().next(); // entry für das bild des animes
+					Map.Entry<String, JButton> malentry = malmap.entrySet().iterator().next(); // entry für den link der my anime list
+					Map.Entry<String, JButton> buttonentry = buttonMap.entrySet().iterator().next(); // entry für die buttons
+					
+			
+					
+					// buttons ordnungsgemäß dem scrollpanel hinzufügen
 					
 					panel.add(button);
-					
 					panel.revalidate();
 					content.revalidate();
 					panel.repaint();
@@ -169,108 +176,102 @@ public class SearchAnime {
 					button.addActionListener(new ActionListener() {
 
 						@Override
-						public void actionPerformed(ActionEvent e) {
-							URL imageget;
+						public void actionPerformed(ActionEvent e) {	
 							
-							String link = firstEntry.getKey() + "";
-							System.out.println(link);
+							buttonpress = buttonentry.getKey(); // sagt, was für ein button gedrückt wurde
+							buttonpress = buttonpress.substring(0, buttonpress.length()); // schneidet den string zu
 							
-							malurl = malentry.getKey() + "";
+							pressedimage = picturelinkentry.getKey();
+							pressedlink = malentry.getKey();
 							
-							System.out.println(malurl);
-				
 							try {
-								imageget = new URL(link);
+								URL imageget = new URL(pressedimage);
 								img.setIcon(new ImageIcon(ImageIO.read(imageget)));
+								
+								titel.setText(buttonpress);
+								
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}					
 						}			
 					});	
 				}	
+
+				results.setText("Ergebnise: " + result);
 				
 			}	
 		});
 		
-		@SuppressWarnings("unused")
-		AddAnime adder = new AddAnime();
+		
+		
 		
 		img.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {
 
+			img.setToolTipText(buttonpress);
+				
+			}	
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(SwingUtilities.isRightMouseButton(e)) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
+			
+				animeInfos.setVisible(true);
 				
-				ActionListener listener = new ActionListener() {
+			}
+		});
 
-					@Override
-					public void actionPerformed(ActionEvent e1) {
-						
-						
-						
-						if(e1.getActionCommand().equals("Name kopieren")) {
-							
-							StringSelection stringSelection = new StringSelection(buttonpress);
-							clipboard.setContents(stringSelection, null);	
-							
-						} else if(e1.getActionCommand().equals("Bild kopieren")) {
-
-							StringSelection stringSelection = new StringSelection(selection);
-							
-							clipboard.setContents(stringSelection, null);
-							
-							
-							
-						} else if(e1.getActionCommand().equals("zur Liste hinzufügen")) {
-							
-							//TODO
-							
-						} else if(e1.getActionCommand().equals("JSONString der API kopieren")) {
-							
-							StringSelection stringSelection = new StringSelection(getApi.array());
-							clipboard.setContents(stringSelection, null);	
-							
-						} else if(e1.getActionCommand().equals("in MyAnimeList öffnen")) {
-							
-							try {
-								
-								System.out.println(malurl);
-								Desktop.getDesktop().browse(new URI(malurl));
-								
-								
-								
-							} catch (IOException | URISyntaxException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							
-						}
-						
-					}
-					
-					
-				};
-				namecopy.addActionListener(listener);
-				imgcopy.addActionListener(listener);
-				addtolist.addActionListener(listener);
-				copyjsonstring.addActionListener(listener);
-				openinmal.addActionListener(listener);
-	
-				}
-			}
+		Button CopyTitle = new Button("Titel Kopieren");
+		CopyTitle.setBounds(7, 365, 130, 30);
+		
+		Button AddAnime = new Button("Anime hinzufügen");
+		AddAnime.setBounds(147, 365, 130, 30);
+		
+		Button CopyPicture = new Button("Bild kopieren");
+		CopyPicture.setBounds(7, 410, 130, 30);
+		
+		Button CopyLink = new Button("MAL Link kopieren");
+		CopyLink.setBounds(147, 410, 130, 30);
+		
+		CopyTitle.addActionListener(new ActionListener() {
 			@Override
-			public void mousePressed(MouseEvent e) {	
-			}
+			public void actionPerformed(ActionEvent e) {
+				StringSelection selection = new StringSelection(buttonpress);			
+				clipboard.setContents(selection, selection);
+			}	
+		});
+		
+		CopyPicture.addActionListener(new ActionListener() {
 			@Override
-			public void mouseReleased(MouseEvent e) {		
-			}
+			public void actionPerformed(ActionEvent e) {
+				StringSelection selection = new StringSelection(pressedimage);
+				clipboard.setContents(selection, selection);			
+			}	
+		});
+		
+		CopyLink.addActionListener(new ActionListener() {
 			@Override
-			public void mouseEntered(MouseEvent e) {	
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {		
+			public void actionPerformed(ActionEvent e) {
+				StringSelection selection = new StringSelection(pressedlink);
+				clipboard.setContents(selection, selection);		
 			}		
+		});
+		
+		AddAnime.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				AddAnimeGUI adder = new AddAnimeGUI();
+				adder.AnimeGUI(buttonpress, true);
+				
+			}	
 		});
 		
 		final JScrollPane scroll_2 = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -284,7 +285,14 @@ public class SearchAnime {
 		searchfield.add(search);
 		searchfield.add(start);
 		searchfield.add(content);
+		searchfield.add(results);
 		info.add(img);
+		info.add(titel);
+		info.add(CopyTitle);
+		info.add(AddAnime);
+		info.add(CopyPicture);
+		info.add(CopyLink);
+		info.add(separator);
 		
 		searchfield.add(info);
 		

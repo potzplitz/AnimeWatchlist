@@ -1,0 +1,131 @@
+img.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(SwingUtilities.isRightMouseButton(e)) {
+				popup.show(e.getComponent(), e.getX(), e.getY());
+				
+				ActionListener listener = new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e1) {
+						
+						
+						
+						if(e1.getActionCommand().equals("Name kopieren")) {
+							
+							StringSelection stringSelection = new StringSelection(buttonpress);
+							clipboard.setContents(stringSelection, null);	
+							
+						} else if(e1.getActionCommand().equals("Bild kopieren")) {
+
+							StringSelection stringSelection = new StringSelection(selection);
+							
+							clipboard.setContents(stringSelection, null);
+							
+							
+							
+						} else if(e1.getActionCommand().equals("zur Liste hinzufügen")) {
+							
+							//TODO
+							
+						} else if(e1.getActionCommand().equals("JSONString der API kopieren")) {
+							
+							StringSelection stringSelection = new StringSelection(getApi.array());
+							clipboard.setContents(stringSelection, null);	
+							
+						} else if(e1.getActionCommand().equals("in MyAnimeList öffnen")) {
+							
+							try {
+								
+								System.out.println(malurl);
+								Desktop.getDesktop().browse(new URI(malurl));
+								
+								
+								
+							} catch (IOException | URISyntaxException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+						}
+						
+					}
+					
+					
+				};
+				namecopy.addActionListener(listener);
+				imgcopy.addActionListener(listener);
+				addtolist.addActionListener(listener);
+				copyjsonstring.addActionListener(listener);
+				openinmal.addActionListener(listener);
+	
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {	
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {		
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {	
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {		
+			}		
+		});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			JPopupMenu popup = new JPopupMenu();
+		
+		JMenuItem addtolist = new JMenuItem("zur Liste hinzufügen");
+		JMenuItem namecopy = new JMenuItem("Name kopieren");
+		JMenuItem imgcopy = new JMenuItem("Bild kopieren");
+		JMenuItem copyjsonstring = new JMenuItem("JSONString der API kopieren");
+		JMenuItem openinmal = new JMenuItem("in MyAnimeList öffnen");
+		
+		popup.add(addtolist);
+		popup.add(namecopy);
+		popup.add(imgcopy);
+		popup.add(copyjsonstring);
+		popup.add(openinmal);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
