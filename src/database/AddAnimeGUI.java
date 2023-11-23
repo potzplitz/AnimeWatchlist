@@ -22,7 +22,11 @@ public class AddAnimeGUI {
 	
 	public void AnimeGUI(String name, boolean Search) {
 		
+<<<<<<< Updated upstream
 		JFrame addframe = new JFrame("Anime hinzufügen...");
+=======
+		JFrame addframe = new JFrame("Anime hinzufï¿½gen...");
+>>>>>>> Stashed changes
 		addframe.setSize(400, 400);
 		addframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		addframe.setLayout(null);
@@ -66,7 +70,11 @@ public class AddAnimeGUI {
 	     	}	
     	});
 		
+<<<<<<< Updated upstream
 		Button confirm = new Button("hinzufügen");
+=======
+		Button confirm = new Button("hinzufï¿½gen");
+>>>>>>> Stashed changes
 		confirm.setBounds(135, 320, 100, 30);
 		
 		Button getanime = new Button("Animes suchen");
@@ -84,6 +92,10 @@ public class AddAnimeGUI {
 		getanime.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+<<<<<<< Updated upstream
+=======
+				addframe.setVisible(false);
+>>>>>>> Stashed changes
 				SearchAnime anime = new SearchAnime();
 				anime.search();
 			}
