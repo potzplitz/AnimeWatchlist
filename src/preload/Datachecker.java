@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import api.HTTPApi;
 import database.CreateFileStructure;
-import database.Import;
 import main.AWLGui;
 
 @SuppressWarnings("unused")

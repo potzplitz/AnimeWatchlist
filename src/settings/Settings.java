@@ -1,21 +1,5 @@
 package settings;
 
-<<<<<<< Updated upstream
-import javax.swing.JFrame;
-
-public class Settings {
-	
-	public void Setting() {
-		
-		@SuppressWarnings("unused")
-		JFrame settings = new JFrame("Einstellungen");
-		
-	}
-
-}
-=======
- 
-
 import java.awt.Color;
 import java.awt.Font;
 
@@ -23,9 +7,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
-
  
 
 public class Settings {
@@ -101,4 +83,3 @@ public class Settings {
  
 
 }
->>>>>>> Stashed changes
