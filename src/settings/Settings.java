@@ -70,7 +70,9 @@ boolean checkbool = false;
 		darkmodecheck.setBackground(Color.LIGHT_GRAY);
 		darkmode.setVisible(true);
 
-		
+		LoadSettings load = new LoadSettings();
+
+		darkmodecheck.setSelected(load.getDarkmode());
 
 		darkmodecheck.addItemListener(new ItemListener() {
 			@Override
@@ -88,12 +90,12 @@ boolean checkbool = false;
 		
 		JSpinner threadspeed = new JSpinner();
 		threadspeed.setBounds(10, 190, 100, 30);
-		threadspeed.setValue(new LoadSettings().getThreadspeed());
+		threadspeed.setValue(load.getThreadspeed());
 
 		SettingsWriter write = new SettingsWriter();
 
 		Button save = new Button("speichern");
-		save.setBounds(230, 430, 100, 30);
+		save.setBounds(190, 420, 100, 30);
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0)  {
