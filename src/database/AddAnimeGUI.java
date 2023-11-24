@@ -8,6 +8,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -69,10 +70,10 @@ public class AddAnimeGUI {
     	});
 		
 
-		Button confirm = new Button("hinzuf�gen");
+		JButton confirm = new JButton("hinzuf�gen");
 		confirm.setBounds(135, 320, 100, 30);
 		
-		Button getanime = new Button("Animes suchen");
+		JButton getanime = new JButton("Animes suchen");
 		getanime.setBounds(140, 0, 100, 30);
 		
 		

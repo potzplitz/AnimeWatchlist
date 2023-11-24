@@ -64,18 +64,15 @@ public class SearchAnime {
 		animeInfos.setVisible(false);
 		
 		panel = new JPanel(); 
-		panel.setBackground(Color.LIGHT_GRAY);
 		panel.setLayout(new GridLayout(getApi.arrayLength(), 1, 1, 1));
 		panel.setLocation(0, 0);
 		
 		JPanel content = new JPanel();
 		content.setBounds(0, 100, 500, 361);
 		content.setLayout(null);
-		content.setBackground(Color.LIGHT_GRAY);
 		
 		JPanel info = new JPanel();
 		info.setBounds(500, 0, 283, 500);
-		info.setBackground(Color.LIGHT_GRAY);
 		info.setLayout(null);
 		
 		JTextField search = new JTextField("nach Animes suchen");
@@ -89,8 +86,7 @@ public class SearchAnime {
 		
 		JLabel img = new JLabel("", SwingConstants.CENTER);
 		img.setBounds(0, 1, 283, 324);
-		img.setBackground(Color.GRAY);
-		
+				
 		JLabel results = new JLabel("Ergebnisse: 0");
 		results.setBounds(1, 37, 100, 30);
 		
@@ -102,7 +98,7 @@ public class SearchAnime {
 		
 		
 		
-		Button start = new Button("Suchen");
+		JButton start = new JButton("Suchen");
 		start.setBounds(197, 33, 100, 30);
 		
 		start.addActionListener(new ActionListener() {
@@ -129,12 +125,11 @@ public class SearchAnime {
 
 					button.setText(a.getJSONObject(i).getString("title"));
 					button.setPreferredSize(new  Dimension(400, 100));
-					button.setBackground(Color.LIGHT_GRAY);
 					button.setVisible(true);
 					
 					panel.remove(button);
 					
-					// Maps erstellen damit button und wert miteinander verknüpft werden können
+					// Maps erstellen damit button und wert miteinander verknï¿½pft werden kï¿½nnen
 					
 					Map<String, JButton> buttonMap = new HashMap<>(); // name und keypress in einer map
 					Map<String, JButton> linkmap = new HashMap<>(); // link des bildes und keypress in einer map
@@ -142,7 +137,7 @@ public class SearchAnime {
 					Map<String, JButton> genremap = new HashMap<>();
 					
 					
-					// Maps mit infos bestücken
+					// Maps mit infos bestï¿½cken
 					
 					buttonMap.put(a.getJSONObject(i).getString("title"), button); // titel und button werden in eine map gepackt
 					linkmap.put(a.getJSONObject(i).getJSONObject("images").getJSONObject("jpg").getString("image_url"), button); // link des bildes und button werden in eine map gepackt
@@ -152,15 +147,15 @@ public class SearchAnime {
 					
 					//genremap.put(, button);
 					
-					// map entrys erstellen, damit gedrückte buttonelemente einfacher ausgegeben werden können
+					// map entrys erstellen, damit gedrï¿½ckte buttonelemente einfacher ausgegeben werden kï¿½nnen
 					
-					Map.Entry<String, JButton> picturelinkentry = linkmap.entrySet().iterator().next(); // entry für das bild des animes
-					Map.Entry<String, JButton> malentry = malmap.entrySet().iterator().next(); // entry für den link der my anime list
-					Map.Entry<String, JButton> buttonentry = buttonMap.entrySet().iterator().next(); // entry für die buttons
+					Map.Entry<String, JButton> picturelinkentry = linkmap.entrySet().iterator().next(); // entry fï¿½r das bild des animes
+					Map.Entry<String, JButton> malentry = malmap.entrySet().iterator().next(); // entry fï¿½r den link der my anime list
+					Map.Entry<String, JButton> buttonentry = buttonMap.entrySet().iterator().next(); // entry fï¿½r die buttons
 					
 			
 					
-					// buttons ordnungsgemäß dem scrollpanel hinzufügen
+					// buttons ordnungsgemï¿½ï¿½ dem scrollpanel hinzufï¿½gen
 					
 					panel.add(button);
 					panel.revalidate();
@@ -178,7 +173,7 @@ public class SearchAnime {
 						@Override
 						public void actionPerformed(ActionEvent e) {	
 							
-							buttonpress = buttonentry.getKey(); // sagt, was für ein button gedrückt wurde
+							buttonpress = buttonentry.getKey(); // sagt, was fï¿½r ein button gedrï¿½ckt wurde
 							buttonpress = buttonpress.substring(0, buttonpress.length()); // schneidet den string zu
 							
 							pressedimage = picturelinkentry.getKey();
@@ -227,16 +222,16 @@ public class SearchAnime {
 			}
 		});
 
-		Button CopyTitle = new Button("Titel Kopieren");
+		JButton CopyTitle = new JButton("Titel Kopieren");
 		CopyTitle.setBounds(7, 365, 130, 30);
 		
-		Button AddAnime = new Button("Anime hinzufügen");
+		JButton AddAnime = new JButton("Anime hinzufï¿½gen");
 		AddAnime.setBounds(147, 365, 130, 30);
 		
-		Button CopyPicture = new Button("Bild kopieren");
+		JButton CopyPicture = new JButton("Bild kopieren");
 		CopyPicture.setBounds(7, 410, 130, 30);
 		
-		Button CopyLink = new Button("MAL Link kopieren");
+		JButton CopyLink = new JButton("MAL Link kopieren");
 		CopyLink.setBounds(147, 410, 130, 30);
 		
 		CopyTitle.addActionListener(new ActionListener() {

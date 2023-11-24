@@ -9,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,12 +30,6 @@ boolean checkbool = false;
 
 	public void Setting() throws UnsupportedLookAndFeelException {
 
-		if(new LoadSettings().getDarkmode() == true) {
-			UIManager.setLookAndFeel(new FlatDarkLaf());
-		} else {
-			UIManager.setLookAndFeel(new FlatLightLaf());
-		}
-
 		JFrame settings = new JFrame("Einstellungen");
 		settings.setSize(500, 500);
 		settings.setLayout(null);
@@ -45,7 +40,6 @@ boolean checkbool = false;
 		JPanel settingspanel = new JPanel();
 		settingspanel.setBounds(0, 0, 500, 500);
 		settingspanel.setLayout(null);
-		settingspanel.setBackground(Color.LIGHT_GRAY);
 
 		JLabel apperance = new JLabel("Aussehen");
 		apperance.setBounds(1, 10, 100, 30);
@@ -64,7 +58,7 @@ boolean checkbool = false;
 		
 
 		for(int i = 0; i <= 3; i++) {
-			for(int j = 0; j <= 90; j++) {
+			for(int j = 0; j <= 100; j++) {
 			str.append("_");
 			}	
 				JLabel separator = new JLabel(str.toString());
@@ -82,7 +76,6 @@ boolean checkbool = false;
 		
 		JCheckBox darkmodecheck = new JCheckBox("aktiviert");
 		darkmodecheck.setBounds(10, 75, 150, 30);
-		darkmodecheck.setBackground(Color.LIGHT_GRAY);
 		darkmode.setVisible(true);
 
 		LoadSettings load = new LoadSettings();
@@ -119,7 +112,7 @@ boolean checkbool = false;
 
 		SettingsWriter write = new SettingsWriter();
 
-		Button save = new Button("speichern");
+		JButton save = new JButton("speichern");
 		save.setBounds(190, 420, 100, 30);
 		save.addActionListener(new ActionListener() {
 			@Override
