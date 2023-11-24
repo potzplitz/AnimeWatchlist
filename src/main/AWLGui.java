@@ -409,6 +409,9 @@ public class AWLGui {
 		    });
 			
 
+			System.out.println("test");
+
+
 			gesehen.repaint();
 			nichtgesehen.repaint();
 			gui.setSize(600, 499);
