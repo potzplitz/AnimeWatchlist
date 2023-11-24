@@ -7,8 +7,8 @@ import org.json.JSONObject;
 
 public class LoadSettings {
 
-	boolean darkmode;
-	int threadspeed;
+	static boolean darkmode;
+	static int threadspeed;
 
 	public void load() throws IOException {
 		
@@ -18,6 +18,7 @@ public class LoadSettings {
 
 		darkmode = obj.getBoolean("DarkMode");
 		threadspeed = obj.getInt("ThreadSpeed");
+		
 	}
 
 	public boolean getDarkmode() {

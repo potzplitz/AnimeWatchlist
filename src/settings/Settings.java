@@ -88,7 +88,7 @@ boolean checkbool = false;
 		
 		JSpinner threadspeed = new JSpinner();
 		threadspeed.setBounds(10, 190, 100, 30);
-		threadspeed.setValue(1);
+		threadspeed.setValue(new LoadSettings().getThreadspeed());
 
 		SettingsWriter write = new SettingsWriter();
 
