@@ -14,13 +14,26 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
  
 
 public class Settings {
 
 boolean checkbool = false;
 
-	public void Setting() {
+	public void Setting() throws UnsupportedLookAndFeelException {
+
+		if(new LoadSettings().getDarkmode() == true) {
+			UIManager.setLookAndFeel(new FlatDarkLaf());
+		} else {
+			UIManager.setLookAndFeel(new FlatLightLaf());
+		}
 
 		JFrame settings = new JFrame("Einstellungen");
 		settings.setSize(500, 500);
@@ -50,15 +63,17 @@ boolean checkbool = false;
 		StringBuilder str = new StringBuilder();
 		
 
-		for(int i = 0; i <= 3; i++) {			
-				str.append("_".repeat(90));
-				
+		for(int i = 0; i <= 3; i++) {
+			for(int j = 0; j <= 90; j++) {
+			str.append("_");
+			}	
 				JLabel separator = new JLabel(str.toString());
 				separator.setBounds(0, valold, 500, 30);
 				separator.setVisible(true);
 				settingspanel.add(separator);
 		
 				valold += val;
+				
 		}
 		
 		JLabel darkmode = new JLabel("Darkmode");
@@ -91,6 +106,16 @@ boolean checkbool = false;
 		JSpinner threadspeed = new JSpinner();
 		threadspeed.setBounds(10, 190, 100, 30);
 		threadspeed.setValue(load.getThreadspeed());
+
+		threadspeed.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				if((int) threadspeed.getValue() <= 0) {
+					threadspeed.setValue(0);		
+				}
+			}	
+		});
+		
 
 		SettingsWriter write = new SettingsWriter();
 

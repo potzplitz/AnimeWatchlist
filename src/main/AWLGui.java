@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -21,15 +22,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -45,21 +43,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import api.HTTPApi;
-import api.SearchAnime;
-import database.AddAnime;
 import database.AddAnimeGUI;
 import database.EditAnime;
 import database.TXTExport;
 import settings.LoadSettings;
 import settings.Settings;
 
-
-
-@SuppressWarnings({ "serial", "unused" })
 class Frame extends JFrame{
 	 
 	Frame(String title) {
@@ -88,7 +85,17 @@ public class AWLGui {
 
 	private String buttonpress; // was auf dem gedrücktem button draufsteht
 	
-	public void Gui() throws IOException, InterruptedException {
+	public void Gui() throws IOException, InterruptedException, UnsupportedLookAndFeelException {
+
+
+		LoadSettings loadsettings = new LoadSettings();
+		loadsettings.load();
+
+		if(new LoadSettings().getDarkmode() == true) {
+			UIManager.setLookAndFeel(new FlatDarkLaf());
+		} else {
+			UIManager.setLookAndFeel(new FlatLightLaf());
+		}
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
@@ -110,18 +117,18 @@ public class AWLGui {
 
 		JPanel gesehen = new JPanel();
 		gesehen.setLocation(0, 50);
-		gesehen.setBackground(Color.LIGHT_GRAY);
+		
 		
 		JPanel infos = new JPanel();
 		infos.setBounds(250, 50, 350, 450);
 		infos.setLayout(null);
-		infos.setBackground(Color.WHITE);
+		
 		
 		JProgressBar load = new JProgressBar();
 		
 		JPanel nichtgesehen = new JPanel();
 		nichtgesehen.setLocation(0, 50);
-		nichtgesehen.setBackground(Color.LIGHT_GRAY);
+		
 		
 		JLabel gesehenjn = new JLabel("Gesehen: ");
 		gesehenjn.setBounds(5, 30, 300, 30);
@@ -161,7 +168,7 @@ public class AWLGui {
 		genree.setBounds(40, 160, 300, 30);
 		
 		JTextField searchbar = new JTextField();
-		searchbar.setBounds(250, 1, 137, 50);
+		searchbar.setBounds(250, 0, 137, 50);
 		
 		JTextField path = new JTextField("Pfad festlegen");
 		path.setBounds(60, 100, 250, 30);
@@ -193,7 +200,7 @@ public class AWLGui {
 	     	}	
     	});
 		
-		Button confirme = new Button("Speichern");
+		JButton confirme = new JButton("Speichern");
 		confirme.setBounds(135, 320, 100, 30);
 		
 		JLabel editanimelabel = new JLabel();
@@ -209,14 +216,14 @@ public class AWLGui {
 		File[] listOfFilesGesehen = file.listFiles();
 		int animecount = file.list().length;
 
-		Button edit = new Button("Anime bearbeiten");
+		JButton edit = new JButton("Bearbeiten");
 		edit.setBounds(113, 377, 100, 30);
 		
-		Button delete = new Button("Anime löschen");
+		JButton delete = new JButton("Löschen");
 		delete.setBounds(5, 377, 100, 30);
 		
-		Button favourite = new Button("Favorit");
-		favourite.setBounds(223, 377, 100, 30);
+		JButton favourite = new JButton("Favorit");
+		favourite.setBounds(223, 377, 102, 30);
 		
 		JFrame editwindow = new JFrame("Anime bearbeiten [WORK IN PROGRESS]");
 		editwindow.setSize(400, 400);
@@ -231,7 +238,6 @@ public class AWLGui {
 		loadwindow.setResizable(false);
 		loadwindow.setLocation(dim.width/2-loadwindow.getSize().width/2, dim.height/2-loadwindow.getSize().height/2);
 		loadwindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		loadwindow.setBackground(Color.LIGHT_GRAY);
 		loadwindow.setLayout(null);
 		loadwindow.setVisible(true);
 		
@@ -261,7 +267,6 @@ public class AWLGui {
 		
 		JLabel img = new JLabel();
 		img.setBounds(10, 100, 225, 324);
-		img.setBackground(Color.LIGHT_GRAY);
 		
 		
 	//	image.apiReader("absolute-duo");
@@ -305,7 +310,6 @@ public class AWLGui {
 			
 			JButton anime = new JButton(filename);
 			anime.setPreferredSize(new  Dimension(220, 50));
-			anime.setBackground(Color.LIGHT_GRAY);
 	
 			Map<String, JButton> buttonMap = new HashMap<>();
 			buttonMap.put(filename, anime);
@@ -362,12 +366,12 @@ public class AWLGui {
 				@Override
 				public void mouseEntered(MouseEvent e) {
 					anime.setToolTipText(anime.getText());	
-					anime.setBackground(Color.decode("#adc5e0"));
+					//anime.setBackground(Color.decode("#adc5e0"));
 				}
 				@Override
 				public void mouseExited(MouseEvent e) {
 					anime.setToolTipText("");	
-					anime.setBackground(Color.LIGHT_GRAY);
+					
 				}	
 			});
 
@@ -464,43 +468,45 @@ public class AWLGui {
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll_2.setBounds(0, 50, 250, 411);
 		scroll_2.getVerticalScrollBar().setUnitIncrement(10);
-		scroll_2.setForeground(Color.LIGHT_GRAY);
 		scroll_2.setVisible(false);
 		gui.add(scroll_2);
 
-		Button gesehenbutton = new Button("gesehen " + "(" + geseheneanimes + " Animes)");
+		JButton gesehenbutton = new JButton("gesehen " + "(" + geseheneanimes + " Animes)");
 		gesehenbutton.setBounds(0, 0, 250, 50);
 		
-		Button watchbutton = new Button("nicht gesehen " + "(" + nichtgeseheneanimes + " Animes)");
+		
+		JButton watchbutton = new JButton("nicht gesehen " + "(" + nichtgeseheneanimes + " Animes)");
 		watchbutton.setBounds(0, 0, 250, 50);
 		
-		Button settings = new Button("Settings");
+		JButton settings = new JButton("Settings");
+		settings.setMargin(new Insets(1,1,1,1));
 		//settings.setFont(new Font("Arial", Font.PLAIN, 23));
 		settings.setBounds(484, 0, 50, 50);
-		settings.setBackground(Color.LIGHT_GRAY);
 		
-		Button add = new Button("+");
+		JButton add = new JButton("+");
 		add.setFont(new Font("Arial", Font.PLAIN, 23));
 		add.setBounds(534, 0, 50, 50);
-		add.setBackground(Color.LIGHT_GRAY);
+	//	add.setBackground(Color.LIGHT_GRAY);
 		
 		
 		
-		Button exportb = new Button("Export");
+		JButton exportb = new JButton("Export");
 		exportb.setBounds(434, 0, 50, 50);
-		exportb.setBackground(Color.LIGHT_GRAY);
+		exportb.setMargin(new Insets(1,1,1,1));
+	//	exportb.setBackground(Color.LIGHT_GRAY);
 		
-		Button searchfilter = new Button("Filter");
+		JButton searchfilter = new JButton("Filter");
 		searchfilter.setBounds(384, 0, 50, 50);
-		searchfilter.setBackground(Color.LIGHT_GRAY);
+		searchfilter.setMargin(new Insets(1,1,1,1));
+	//	searchfilter.setBackground(Color.LIGHT_GRAY);
 		
-		Button yes = new Button("Ja");
+		JButton yes = new JButton("Ja");
 		yes.setBounds(74, 200, 100, 30);
 		
-		Button no = new Button("Nein");
+		JButton no = new JButton("Nein");
 		no.setBounds(194, 200, 100, 30);
 		
-		Button filechooser = new Button("...");
+		JButton filechooser = new JButton("...");
 		filechooser.setBounds(309, 99, 30, 30);
 		
 		
@@ -511,7 +517,12 @@ public class AWLGui {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Settings settings = new Settings();
-				settings.Setting();
+				try {
+					settings.Setting();
+				} catch (UnsupportedLookAndFeelException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -609,11 +620,13 @@ public class AWLGui {
 		});
 		
 		
-		
-			//if(Files.readAllLines(Paths.get("C:\\AnimeWatchList\\config\\config.json")).get(3).equals("true"))
-		
 
 		count.setText("Es werden " + animecount + " Animes exportiert. Fortfahren?");
+
+		
+
+		
+		
 		
 		editwindow.add(genrelabele);
 		editwindow.add(genree);
