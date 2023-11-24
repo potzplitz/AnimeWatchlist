@@ -407,10 +407,6 @@ public class AWLGui {
 				    }
 				}
 		    });
-			
-
-			System.out.println("test");
-
 
 			gesehen.repaint();
 			nichtgesehen.repaint();
