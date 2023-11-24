@@ -7,6 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="json-20230227.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jansc/Desktop/flatlaf-demo-3.2.5.jar"/>
+	<classpathentry kind="lib" path="flatlaf-demo-3.2.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
