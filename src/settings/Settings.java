@@ -1,7 +1,13 @@
 package settings;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -11,6 +17,8 @@ import javax.swing.JSpinner;
  
 
 public class Settings {
+
+boolean checkbool = false;
 
 	public void Setting() {
 
@@ -62,12 +70,43 @@ public class Settings {
 		darkmodecheck.setBackground(Color.LIGHT_GRAY);
 		darkmode.setVisible(true);
 
+		
+
+		darkmodecheck.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+			    	checkbool = true;
+				} else if(e.getStateChange() == ItemEvent.DESELECTED) {		
+					checkbool = false;		
+				}		
+	     	}	
+    	});
+
 		JLabel threadspeedlabel = new JLabel("Tread geschwindigkeit");
 		threadspeedlabel.setBounds(10, 160, 130, 30);
 		
 		JSpinner threadspeed = new JSpinner();
 		threadspeed.setBounds(10, 190, 100, 30);
 		threadspeed.setValue(1);
+
+		SettingsWriter write = new SettingsWriter();
+
+		Button save = new Button("speichern");
+		save.setBounds(230, 430, 100, 30);
+		save.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0)  {
+			
+				try {
+					write.write((int) threadspeed.getValue(), checkbool);
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
+			
+			}	
+		});
 		
 		settings.add(settingspanel);
 		
@@ -77,6 +116,7 @@ public class Settings {
 		settingspanel.add(threadspeed);
 		settingspanel.add(performance);
 		settingspanel.add(darkmodecheck);
+		settingspanel.add(save);
 
 	}
 

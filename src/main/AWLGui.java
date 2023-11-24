@@ -54,6 +54,7 @@ import database.AddAnime;
 import database.AddAnimeGUI;
 import database.EditAnime;
 import database.TXTExport;
+import settings.LoadSettings;
 import settings.Settings;
 
 
@@ -280,8 +281,13 @@ public class AWLGui {
     	Icon icon = UIManager.getIcon("OptionPane.InfoIcon");
     	
 
+		LoadSettings settingsload = new LoadSettings();
+		settingsload.load();
+
+		int sleep = settingsload.getThreadspeed();
+
 		for(int i = 0; i < animecount; i++) {
-			Thread.sleep(0);
+			Thread.sleep(sleep);
 			load.setValue(i);
 
 			String filename = listOfFilesGesehen[i].getName() + "";	

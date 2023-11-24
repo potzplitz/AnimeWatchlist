@@ -5,6 +5,7 @@ import java.io.IOException;
 import api.HTTPApi;
 import database.CreateFileStructure;
 import main.AWLGui;
+import settings.LoadSettings;
 
 @SuppressWarnings("unused")
 public class Datachecker {
@@ -19,13 +20,8 @@ public class Datachecker {
 		start.Gui();
 		
 		String name = "";
-		
-	//	Import importer = new Import();
-	//	importer.AnimeImport();
-		
-		
-		//GetAnimeImage image = new GetAnimeImage();
-	//	image.getAnimeImage(name);
+
+	
 		
 	}
 
