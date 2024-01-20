@@ -23,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -89,7 +90,6 @@ public class SearchAnime {
 				
 		JLabel results = new JLabel("Ergebnisse: 0");
 		results.setBounds(1, 37, 100, 30);
-		
 		// kopierfunktion erstellen
 		
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

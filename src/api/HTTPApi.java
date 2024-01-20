@@ -50,13 +50,6 @@ public class HTTPApi {
 
 	}
 	
-	public String GetImage() throws IOException {
-
-		
-		return imgurl;
-		
-	}
-	
 	public int arrayLength() {
 		
 		return arraylength;

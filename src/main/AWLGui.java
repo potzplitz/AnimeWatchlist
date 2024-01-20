@@ -55,24 +55,10 @@ import database.TXTExport;
 import settings.LoadSettings;
 import settings.Settings;
 
-class Frame extends JFrame{
-	 
-	Frame(String title) {
-	    super(title);
-	    
-	    setSize(600, 500);
-	    setDefaultCloseOperation(Frame.EXIT_ON_CLOSE);
-	    setResizable(false);
-	    setLayout(null);
-	    
-	    
 
-	  }
-	 
- }
 
 public class AWLGui {
-	
+
 	// klassenübergeifende variablen erstellen
 	
 	private boolean gesehenboolean; // gesehen ob ja oder nein
@@ -82,6 +68,8 @@ public class AWLGui {
 	private int nichtgeseheneanimes; // anzahl an nicht gesehenen animes
 
 	private String buttonpress; // was auf dem gedrücktem button draufsteht
+
+	public JFrame gui = new JFrame("Anime Watch List");
 	
 	public void Gui() throws IOException, InterruptedException, UnsupportedLookAndFeelException {
 
@@ -97,10 +85,13 @@ public class AWLGui {
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		Frame gui = new Frame("Anime Watch List");
-		gui.setVisible(false);
-		gui.setLocation(dim.width/2-gui.getSize().width/2, dim.height/2-gui.getSize().height/2);
 		
+		gui.setVisible(false);
+		gui.setSize(600, 600);
+		gui.setLocation(dim.width / 2 - gui.getSize().width / 2, dim.height / 2 - gui.getSize().height / 2);
+		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gui.setResizable(false);
+		gui.setLayout(null);
 		
 		
 		JFrame exporter = new JFrame("Liste exportieren...");
@@ -502,7 +493,7 @@ public class AWLGui {
 		no.setBounds(194, 200, 100, 30);
 		
 		JButton filechooser = new JButton("...");
-		filechooser.setBounds(309, 99, 30, 30);
+		filechooser.setBounds(309, 100, 30, 30);
 		
 		
 		
@@ -514,7 +505,7 @@ public class AWLGui {
 				Settings settings = new Settings();
 				try {
 					settings.Setting();
-				} catch (UnsupportedLookAndFeelException e1) {
+				} catch (UnsupportedLookAndFeelException | IOException | InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -566,6 +557,7 @@ public class AWLGui {
                     try {
                         edit.editAnime(false, animenamee.getText(), genree.getText(), tagse.getText(), gesehenbooleane, Integer.parseInt(ratingselecte.getSelectedItem() + ""));
                     } catch (NumberFormatException | IOException e1) { e1.printStackTrace();}
+
                 } else if (antwort == JOptionPane.NO_OPTION) {}
             }
         });

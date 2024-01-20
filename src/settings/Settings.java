@@ -13,9 +13,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
+import main.AWLGui;
 
 public class Settings {
 
@@ -24,7 +31,7 @@ public class Settings {
     
 boolean checkbool = false;
 
-	public void Setting() throws UnsupportedLookAndFeelException {
+	public void Setting() throws UnsupportedLookAndFeelException, IOException, InterruptedException {
 
 		JFrame settings = new JFrame("Einstellungen");
 		settings.setSize(500, 500);
@@ -52,10 +59,12 @@ boolean checkbool = false;
 		
 		StringBuilder str = new StringBuilder();
 		
+		int jbuffer = 0;
 
 		for(int i = 0; i <= 3; i++) {
 			for(int j = 0; j <= 100; j++) {
 			str.append("_");
+			jbuffer = j;
 			}	
 				JLabel separator = new JLabel(str.toString());
 				separator.setBounds(0, valold, 500, 30);
@@ -63,6 +72,10 @@ boolean checkbool = false;
 				settingspanel.add(separator);
 		
 				valold += val;
+
+				str.delete(0, jbuffer);
+
+
 				
 		}
 		
@@ -75,6 +88,9 @@ boolean checkbool = false;
 		darkmode.setVisible(true);
 
 		LoadSettings load = new LoadSettings();
+
+		AWLGui awlg = new AWLGui();
+		
 
 		darkmodecheck.setSelected(load.getDarkmode());
 
@@ -113,6 +129,8 @@ boolean checkbool = false;
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0)  {
+
+				
 			
 				try {
 					write.write((int) threadspeed.getValue(), checkbool);

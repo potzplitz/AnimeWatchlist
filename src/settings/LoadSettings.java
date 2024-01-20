@@ -1,5 +1,6 @@
 package settings;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,12 +13,20 @@ public class LoadSettings {
 
 	public void load() throws IOException {
 		
-		String configjson = Files.readAllLines(Paths.get("C:\\AnimeWatchList\\config\\config.json")).get(0);
+		if(new File("C:\\AnimeWatchList\\config\\config.json").exists()) {
 
-		JSONObject obj = new JSONObject(configjson);
+			String configjson = Files.readAllLines(Paths.get("C:\\AnimeWatchList\\config\\config.json")).get(0);
 
-		darkmode = obj.getBoolean("DarkMode");
-		threadspeed = obj.getInt("ThreadSpeed");
+			JSONObject obj = new JSONObject(configjson);
+
+			darkmode = obj.getBoolean("DarkMode");
+			threadspeed = obj.getInt("ThreadSpeed");
+		} else {
+			
+			System.out.println("config not found");
+			
+		}
+		
 		
 	}
 
