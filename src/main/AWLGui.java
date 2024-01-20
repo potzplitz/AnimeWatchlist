@@ -109,9 +109,6 @@ public class AWLGui {
 		exporter.setLayout(null);
 		exporter.setResizable(false);
 		exporter.setVisible(false);
-		
-		
-		
 
 		JPanel gesehen = new JPanel();
 		gesehen.setLocation(0, 50);
